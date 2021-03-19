@@ -1,2 +1,2 @@
 # KUPEP
-an exam software that will be used in computer labsss
+an exam software that will be used in computer labs
