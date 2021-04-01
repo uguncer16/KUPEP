@@ -35,9 +35,15 @@ import javax.swing.table.AbstractTableModel;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
+import com.mycompany.classes.*;
 
 public class ExaminerForm extends javax.swing.JFrame {
+    
+    DefaultTableModel m ;
+    ServerController sController;
+    
  class connectionColumnCellRenderer extends DefaultTableCellRenderer {
+     
 
   public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int col) {
 
@@ -80,17 +86,26 @@ class pmEnabledColumnCellRenderer extends DefaultTableCellRenderer {
   return l;
   }
  }
+
+
     /**
      * Creates new form ContactEditor
      */
-    public ExaminerForm() {
+    public ExaminerForm(ServerController sController) {
+        this.sController = sController;
         initComponents();
  //       jTable1.getModel().
 Action openMiniChat = new AbstractAction()
 {
     public void actionPerformed(ActionEvent e)
     {
-        MiniChat.main(null);
+        JTable table = (JTable)e.getSource();
+        int modelRow = Integer.valueOf( e.getActionCommand() );
+        
+        String username= (String)((DefaultTableModel)table.getModel()).getValueAt(modelRow,3);
+        ((DefaultTableModel)table.getModel()).setValueAt("Open",modelRow,7);
+        sController.openChat(username);
+        //MiniChat.main(null);
     }
 };
 Action togglePmEnabled = new AbstractAction()
@@ -100,45 +115,44 @@ Action togglePmEnabled = new AbstractAction()
         JTable table = (JTable)e.getSource();
         int modelRow = Integer.valueOf( e.getActionCommand() );
         
-        String t= (String)((DefaultTableModel)table.getModel()).getValueAt(modelRow,9);
+        String t= (String)((DefaultTableModel)table.getModel()).getValueAt(modelRow,8);
         if (t.equals("ON")) {
-            table.setValueAt("OFF", modelRow,9);
+            table.setValueAt("OFF", modelRow,8);
         } else {
-            table.setValueAt("ON", modelRow,9);
+            table.setValueAt("ON", modelRow,8);
         }
     }
 };
-DefaultTableModel m = (DefaultTableModel)jTable1.getModel();
+m = (DefaultTableModel)jTable1.getModel();
 m.addColumn("PC No:");
 m.addColumn("Mac/Windows");
 m.addColumn("IP");
-m.addColumn("Name");
-m.addColumn("Surname");
+m.addColumn("User Name");
 m.addColumn("ID");
 m.addColumn("Connection");
 m.addColumn("Sumission Status");
 m.addColumn("Mini Chat");
 m.addColumn("PM Enabled");
 
-Object[] data1 = 
-    {"1", "Windows", "128.64.1.29","Umut", "Günçer", "4331", "YES", "Submitted", "Open", "ON"  };
-Object[] data2 = 
-    {"1", "Windows", "128.64.1.29","Umut", "Günçer", "4331", "NO", "Submitted", "New", "OFF"  };
-
-m.addRow(data1);
-m.addRow(data2);
-
-
+//Object[] data1 = 
+//    {"1", "Windows", "128.64.1.29","Umut", "Günçer", "4331", "YES", "Submitted", "Open", "ON"  };
+//Object[] data2 = 
+//    {"1", "Windows", "128.64.1.29","Umut", "Günçer", "4331", "NO", "Submitted", "New", "OFF"  };
+//
+//m.addRow(data1);
+//m.addRow(data2);
 
 
-ButtonColumn btnMiniChat = new ButtonColumn(jTable1, openMiniChat, 8);
-ButtonColumn btnPmEnabled = new ButtonColumn(jTable1, togglePmEnabled, 9);
+
+
+ButtonColumn btnMiniChat = new ButtonColumn(jTable1, openMiniChat, 7);
+ButtonColumn btnPmEnabled = new ButtonColumn(jTable1, togglePmEnabled, 8);
 btnMiniChat.setMnemonic(KeyEvent.VK_D);
 btnPmEnabled.setMnemonic(KeyEvent.VK_D);
 
-jTable1.getColumnModel().getColumn(6).setCellRenderer(new connectionColumnCellRenderer());
-jTable1.getColumnModel().getColumn(8).setCellRenderer(new miniChatColumnCellRenderer());
-jTable1.getColumnModel().getColumn(9).setCellRenderer(new pmEnabledColumnCellRenderer());
+jTable1.getColumnModel().getColumn(5).setCellRenderer(new connectionColumnCellRenderer());
+jTable1.getColumnModel().getColumn(7).setCellRenderer(new miniChatColumnCellRenderer());
+jTable1.getColumnModel().getColumn(8).setCellRenderer(new pmEnabledColumnCellRenderer());
 
 
 DefaultTableModel mHelpList = (DefaultTableModel)jTable2.getModel();
@@ -175,6 +189,24 @@ mDisconnectedList.addRow(mDisconnectedListData1);
 jTable3.getColumnModel().getColumn(3).setCellRenderer(new miniChatColumnCellRenderer());
 
 }
+    
+    void clientArrived(ClientArrived msg) {
+        Object[] data = 
+            {"1", "Windows", msg.getIP(),msg.getUsername(),  "", "YES", "Not-Submitted", "Open", "ON"  };
+        
+        m.addRow(data);
+        
+    } 
+    
+    void setNewMessage(ChatMessageFromStudent chatMessagFromStudent){
+        String username = chatMessagFromStudent.getUsername();
+        for(int row = 0;row < m.getRowCount();row++) {
+        if (m.getValueAt(row, 3).equals(username)) {
+            m.setValueAt("New",row, 7);
+        }    
+
+        }
+    }
     
     /** This method is called from within the constructor to
      * initialize the form.
@@ -316,12 +348,13 @@ jTable3.getColumnModel().getColumn(3).setCellRenderer(new miniChatColumnCellRend
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel1)
-                    .addComponent(jLabel3)
-                    .addComponent(jLabel5)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel12)
-                    .addComponent(jLabel16))
+                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(jLabel1)
+                        .addComponent(jLabel3)
+                        .addComponent(jLabel5)
+                        .addComponent(jLabel16)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel8, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -555,38 +588,39 @@ jTable3.getColumnModel().getColumn(3).setCellRenderer(new miniChatColumnCellRend
     /**
      * @param args the command line arguments
      */
-    public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            javax.swing.UIManager.LookAndFeelInfo[] installedLookAndFeels=javax.swing.UIManager.getInstalledLookAndFeels();
-            for (int idx=0; idx<installedLookAndFeels.length; idx++)
-                if ("Nimbus".equals(installedLookAndFeels[idx].getName())) {
-                    javax.swing.UIManager.setLookAndFeel(installedLookAndFeels[idx].getClassName());
-                    break;
-                }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(ExaminerForm.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(ExaminerForm.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(ExaminerForm.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(ExaminerForm.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
-        //</editor-fold>
-
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new ExaminerForm().setVisible(true);
-            }
-        });
-    }
+//    public static void go(ServerController sController) {
+//        /* Set the Nimbus look and feel */
+//        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
+//        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
+//         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
+//         */
+//        try {
+//            javax.swing.UIManager.LookAndFeelInfo[] installedLookAndFeels=javax.swing.UIManager.getInstalledLookAndFeels();
+//            for (int idx=0; idx<installedLookAndFeels.length; idx++)
+//                if ("Nimbus".equals(installedLookAndFeels[idx].getName())) {
+//                    javax.swing.UIManager.setLookAndFeel(installedLookAndFeels[idx].getClassName());
+//                    break;
+//                }
+//        } catch (ClassNotFoundException ex) {
+//            java.util.logging.Logger.getLogger(ExaminerForm.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+//        } catch (InstantiationException ex) {
+//            java.util.logging.Logger.getLogger(ExaminerForm.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+//        } catch (IllegalAccessException ex) {
+//            java.util.logging.Logger.getLogger(ExaminerForm.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+//        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
+//            java.util.logging.Logger.getLogger(ExaminerForm.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+//        }
+//        //</editor-fold>
+//        //</editor-fold>
+//
+//        /* Create and display the form */
+//        ExaminerForm examinerForm = new ExaminerForm(sController);
+//        java.awt.EventQueue.invokeLater(new Runnable() {
+//            public void run() {
+//                examinerForm.setVisible(true);
+//            }
+//        });
+//    }
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.ButtonGroup buttonGroup1;

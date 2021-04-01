@@ -18,11 +18,14 @@
  */
 
 package com.mycompany.kupep;
+import com.mycompany.classes.*;
 
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.util.ArrayList;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -41,11 +44,31 @@ public class MiniChat extends javax.swing.JFrame {
     /**
      * Creates new form ContactEditor
      */
-    public MiniChat() {
+    ServerController sController;
+    Student student;
+    public MiniChat(ServerController sController,Student student ) {
+        this.sController = sController;
+        this.student = student;
         initComponents();
- 
+        this.setVisible(true);
+        
+        String textSoFar = "";
+        for (ChatMessage cm: sController.getMessages(student.getUsername())) {
+                
+                textSoFar += ">" + cm.getTime() + ":" + cm.getMessage()+"\n";
 
-//jTable2.getColumnModel().getColumn(3).setCellRenderer(new StatusColumnCellRenderer());
+        }
+            jTextArea2.setText(textSoFar );
+        
+ 
+        addWindowListener(new WindowAdapter()
+        {
+            @Override
+            public void windowClosing(WindowEvent e)
+            {
+                sController.setMiniChat(null);
+            }
+        });
     
 
 }
@@ -82,6 +105,7 @@ public class MiniChat extends javax.swing.JFrame {
         jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder(""));
         jPanel2.setName("PC List"); // NOI18N
 
+        jTextArea2.setEditable(false);
         jTextArea2.setColumns(20);
         jTextArea2.setRows(5);
         jScrollPane2.setViewportView(jTextArea2);
@@ -219,51 +243,61 @@ public class MiniChat extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+  public void receiveChatMessageFromStudent(ChatMessageFromStudent chatMessageFromStudent) {
+    String textSoFar = jTextArea2.getText();
+    textSoFar += ">" + chatMessageFromStudent.getTime() + ":" + chatMessageFromStudent.getMessage()+"\n";
+    jTextArea2.setText(textSoFar );
+    
+}
+                   
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         // TODO add your handling code here:
+        String message = jTextArea1.getText();
+        ChatMessageToStudent chatMessage = new ChatMessageToStudent(message);
+        sController.sendChatMessage(chatMessage,student);
+        jTextArea1.setText("");
+        String textSoFar = jTextArea2.getText();
+        textSoFar += ">>" + chatMessage.getTime() + ":" + chatMessage.getMessage()+"\n";
+        jTextArea2.setText(textSoFar );
     }//GEN-LAST:event_jButton1ActionPerformed
     
     /**
      * @param args the command line arguments
      */
-    public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            javax.swing.UIManager.LookAndFeelInfo[] installedLookAndFeels=javax.swing.UIManager.getInstalledLookAndFeels();
-            for (int idx=0; idx<installedLookAndFeels.length; idx++)
-                if ("Nimbus".equals(installedLookAndFeels[idx].getName())) {
-                    javax.swing.UIManager.setLookAndFeel(installedLookAndFeels[idx].getClassName());
-                    break;
-                }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(MiniChat.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(MiniChat.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(MiniChat.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(MiniChat.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new MiniChat().setVisible(true);
-            }
-        });
-    }
+//    public static void main(String args[]) {
+//        /* Set the Nimbus look and feel */
+//        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
+//        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
+//         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
+//         */
+//        try {
+//            javax.swing.UIManager.LookAndFeelInfo[] installedLookAndFeels=javax.swing.UIManager.getInstalledLookAndFeels();
+//            for (int idx=0; idx<installedLookAndFeels.length; idx++)
+//                if ("Nimbus".equals(installedLookAndFeels[idx].getName())) {
+//                    javax.swing.UIManager.setLookAndFeel(installedLookAndFeels[idx].getClassName());
+//                    break;
+//                }
+//        } catch (ClassNotFoundException ex) {
+//            java.util.logging.Logger.getLogger(MiniChat.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+//        } catch (InstantiationException ex) {
+//            java.util.logging.Logger.getLogger(MiniChat.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+//        } catch (IllegalAccessException ex) {
+//            java.util.logging.Logger.getLogger(MiniChat.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+//        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
+//            java.util.logging.Logger.getLogger(MiniChat.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+//        }
+//        //</editor-fold>
+//        //</editor-fold>
+//        //</editor-fold>
+//        //</editor-fold>
+//        //</editor-fold>
+//        //</editor-fold>
+//        //</editor-fold>
+//        //</editor-fold>
+//
+//        /* Create and display the form */
+// 
+//    }
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.ButtonGroup buttonGroup1;
