@@ -37,10 +37,14 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
 import com.mycompany.classes.*;
 
+
+
 public class ExaminerForm extends javax.swing.JFrame {
     
     DefaultTableModel m ;
     ServerController sController;
+
+    
     
  class connectionColumnCellRenderer extends DefaultTableCellRenderer {
      
@@ -197,6 +201,13 @@ jTable3.getColumnModel().getColumn(3).setCellRenderer(new miniChatColumnCellRend
         m.addRow(data);
         
     } 
+    void updateTimeRemaining(String timeRemaining){
+        jLabel8.setText(timeRemaining);
+    }
+    void updateExamSettings(ExamSetting e){
+        jLabel5.setText(e.getExaminersName());
+        
+    }
     
     void setNewMessage(ChatMessageFromStudent chatMessagFromStudent){
         String username = chatMessagFromStudent.getUsername();
@@ -266,16 +277,16 @@ jTable3.getColumnModel().getColumn(3).setCellRenderer(new miniChatColumnCellRend
 
         jLabel3.setText("Examiner's Name:");
 
-        jLabel5.setText("Serkan");
+        jLabel5.setText("-");
 
         jLabel8.setFont(new java.awt.Font("Tahoma", 1, 24)); // NOI18N
-        jLabel8.setText("01:50:00");
+        jLabel8.setText("--:--:--");
 
         jLabel4.setText("Examiner's Surname:");
 
-        jLabel9.setText("Çil");
+        jLabel9.setText("-");
 
-        jLabel10.setText("Comp 491");
+        jLabel10.setText("-");
 
         jLabel11.setText("Course Code:");
 
@@ -287,13 +298,13 @@ jTable3.getColumnModel().getColumn(3).setCellRenderer(new miniChatColumnCellRend
 
         jLabel15.setText("Banned Sites :");
 
-        jLabel16.setText("Disabled");
+        jLabel16.setText("-");
 
-        jLabel17.setText("www.ku.blackboard.com");
+        jLabel17.setText("-");
 
-        jLabel18.setText("ExamInstructions.docx");
+        jLabel18.setText("-");
 
-        jLabel19.setText(".doc/.rkt/.pdf");
+        jLabel19.setText("-");
 
         jLabel2.setText("KUPEP EXAMINER PANEL");
 
@@ -502,6 +513,11 @@ jTable3.getColumnModel().getColumn(3).setCellRenderer(new miniChatColumnCellRend
         jButton5.setText("Take Exam Submissions");
 
         jButton6.setText("Start Exam");
+        jButton6.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton6ActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
         jPanel5.setLayout(jPanel5Layout);
@@ -583,7 +599,12 @@ jTable3.getColumnModel().getColumn(3).setCellRenderer(new miniChatColumnCellRend
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         // TODO add your handling code here:
+        sController.openExamSettings();
     }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
+        sController.startExam();
+    }//GEN-LAST:event_jButton6ActionPerformed
     
     /**
      * @param args the command line arguments

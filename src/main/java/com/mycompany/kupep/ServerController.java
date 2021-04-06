@@ -11,23 +11,76 @@ import static io.netty.channel.ChannelFutureListener.FIRE_EXCEPTION_ON_FAILURE;
 import io.netty.channel.ChannelHandlerContext;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class ServerController {
     private ExaminerForm examinerFormGUI;
     private HashMap<String,Student> studentList;
     private HashMap<String,ArrayList<ChatMessage>> messageList;
     private MiniChat miniChat;
+    private ExamSettings examSettingsForm;
+    private ExamSetting examSetting;
+    private int timeRemaining;
+    private Timer timer;
 
     public void setMiniChat(MiniChat miniChat) {
         this.miniChat = miniChat;
     }
     
+    public void setExamSettingsForm(ExamSettings examSettingsForm) {
+        this.examSettingsForm = examSettingsForm;
+    }
     
+    void updateExamSettings(){
+        examinerFormGUI.updateExamSettings(examSetting);
+        this.timeRemaining = examSetting.getExamDuration()*60;
+        
+        
+    }
     
     public ServerController(){
         examinerFormGUI = new ExaminerForm(this);
         studentList = new HashMap<String,Student>();
         messageList = new HashMap<String,ArrayList<ChatMessage>>();
+        this.miniChat = null;
+        this.examSettingsForm = null;
+        this.timer = new Timer();
+    }
+    
+    public void startExam(){
+        TimerTask task = new TimerTask(){
+        private int i = 0;
+        public void run(){
+            
+                timeRemaining--;
+                examinerFormGUI.updateTimeRemaining(getTimeRemaining());
+                TimeRemaining tr = new TimeRemaining(getTimeRemaining());
+                sendMessageToAllStudents(tr);
+                
+        }
+    };
+    timer.scheduleAtFixedRate(task, 0, 1000); //1000ms = 1sec
+    }
+    
+    public String getTimeRemaining(){
+      String hh = String.format("%02d",timeRemaining/3600)+":";
+      String mm = String.format("%02d",timeRemaining/60%60)+":";
+      String ss = String.format("%02d",timeRemaining%60);
+      
+        return hh+mm+ss;
+    }
+    
+    public void openExamSettings(){
+        if (this.examSettingsForm==null) {
+            if (this.examSetting==null) {
+                this.examSetting = new ExamSetting();
+            }
+            ExamSettings examSettingsForm = new ExamSettings(this,this.examSetting);    
+            this.examSettingsForm = examSettingsForm;
+        }
+                
+
     }
     
     public void openChat(String username){
@@ -40,10 +93,22 @@ public class ServerController {
                 
             }
     }
+    
     public ArrayList<ChatMessage> getMessages(String username) {
         return messageList.get(username);
         
     }
+    
+    public void sendMessageToAllStudents(Object msg){
+        
+        for (String username : studentList.keySet()) {
+                Student student = studentList.get(username);
+                ChannelFuture future = student.getCtx().writeAndFlush(msg);    
+                future.addListener(FIRE_EXCEPTION_ON_FAILURE);
+            
+        }
+    }
+    
     public void sendChatMessage(ChatMessageToStudent chatMessage,Student student) {
         
         ChannelFuture future = student.getCtx().writeAndFlush(chatMessage);

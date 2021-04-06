@@ -18,11 +18,13 @@
  */
 
 package com.mycompany.kupep;
-
+import com.mycompany.classes.*;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.util.ArrayList;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -38,15 +40,36 @@ import javax.swing.table.TableColumn;
 
 public class ExamSettings extends javax.swing.JFrame {
  
-    /**
-     * Creates new form ContactEditor
-     */
-    public ExamSettings() {
-        initComponents();
- 
-
-//jTable2.getColumnModel().getColumn(3).setCellRenderer(new StatusColumnCellRenderer());
+    ServerController sController;
+    ExamSetting examSetting;
     
+    public ExamSettings(ServerController sController,ExamSetting examSetting) {
+        this.sController = sController;
+        this.examSetting = examSetting;
+        initComponents();
+        
+        jTextField1.setText(this.examSetting.getExaminersName());
+        jTextField2.setText(this.examSetting.getExaminersSurname());
+        jTextField3.setText(this.examSetting.getExamFile());
+        jTextField4.setText(this.examSetting.getExamStartTime());
+        jTextField5.setText(Integer.toString(this.examSetting.getExamDuration()));
+        jToggleButton1.setSelected(this.examSetting.isInternetEnabled());
+        
+        jTextField7.setText(this.examSetting.getBannedSites());
+        jTextField8.setText(this.examSetting.getPermittedFileExtensions());        
+        
+        
+        this.setVisible(true);
+        
+        addWindowListener(new WindowAdapter()
+        {
+            @Override
+            public void windowClosing(WindowEvent e)
+            {
+                sController.setExamSettingsForm(null);
+            }
+        });
+ 
 
 }
     
@@ -96,24 +119,24 @@ public class ExamSettings extends javax.swing.JFrame {
 
         jLabel4.setText("Exam Start Time :");
 
-        jTextField1.setText("Serkan");
+        jTextField1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jTextField1ActionPerformed(evt);
+            }
+        });
 
-        jTextField2.setText("Çil");
-
-        jTextField3.setText("ExamInstructions.doc");
         jTextField3.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jTextField3ActionPerformed(evt);
             }
         });
 
-        jTextField4.setText("12:00");
-
-        jTextField5.setText("75 minutes");
-
-        jTextField7.setText("www.ku.blackboard.com");
-
         jButton3.setText("Save");
+        jButton3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton3ActionPerformed(evt);
+            }
+        });
 
         jButton4.setText("Reset Settings");
 
@@ -124,8 +147,6 @@ public class ExamSettings extends javax.swing.JFrame {
         jLabel11.setText("Banned Sites :");
 
         jLabel12.setText("Permitted File Extensions :");
-
-        jTextField8.setText(".doc/.rkt/.pdf");
 
         jButton1.setText("Upload");
 
@@ -238,56 +259,25 @@ public class ExamSettings extends javax.swing.JFrame {
     private void jTextField3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField3ActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_jTextField3ActionPerformed
-    
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            javax.swing.UIManager.LookAndFeelInfo[] installedLookAndFeels=javax.swing.UIManager.getInstalledLookAndFeels();
-            for (int idx=0; idx<installedLookAndFeels.length; idx++)
-                if ("Nimbus".equals(installedLookAndFeels[idx].getName())) {
-                    javax.swing.UIManager.setLookAndFeel(installedLookAndFeels[idx].getClassName());
-                    break;
-                }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(ExamSettings.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(ExamSettings.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(ExamSettings.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(ExamSettings.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
 
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new ExamSettings().setVisible(true);
-            }
-        });
-    }
+    private void jTextField1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField1ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jTextField1ActionPerformed
+
+    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+        // TODO add your handling code here:
+        this.examSetting.setExaminersName(jTextField1.getText());
+        this.examSetting.setExaminersSurname(jTextField2.getText());
+        this.examSetting.setExamFile(jTextField3.getText());
+        this.examSetting.setInternetEnabled(jToggleButton1.isSelected());
+        this.examSetting.setExamStartTime(jTextField4.getText());
+        this.examSetting.setExamDuration(Integer.parseInt(jTextField5.getText()));
+        this.examSetting.setBannedSites(jTextField7.getText());
+        this.examSetting.setPermittedFileExtensions(jTextField8.getText());
+        this.sController.updateExamSettings();
+    }//GEN-LAST:event_jButton3ActionPerformed
+    
+    
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.ButtonGroup buttonGroup1;
