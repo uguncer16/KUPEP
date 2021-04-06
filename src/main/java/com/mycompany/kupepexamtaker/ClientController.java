@@ -20,6 +20,9 @@ public class ClientController {
         examTakerGUI = new ExamTaker(this);
     }
     
+    public void setTimeRemaining(String t) {
+        examTakerGUI.setTimeRemaining(t);
+    }
     public void sendChatMessage(ChatMessageFromStudent chatMessage) {
         
         ChannelFuture future = ctx.writeAndFlush(chatMessage);

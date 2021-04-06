@@ -88,6 +88,9 @@ class pmEnabledColumnCellRenderer extends DefaultTableCellRenderer {
   return l;
   }
  }
+public void setTimeRemaining(String t) {
+    jLabel30.setText(t);
+}
 
 public void receiveChatMessageToStudent(ChatMessageToStudent chatMessageToStudent) {
     String textSoFar = jTextArea2.getText();

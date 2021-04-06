@@ -60,11 +60,11 @@ public class ObjectEchoClientHandler extends ChannelInboundHandlerAdapter {
         if (msg instanceof ChatMessageToStudent) {
             ChatMessageToStudent chatMessageToStudent = (ChatMessageToStudent)msg;
             cController.receiveChatMessageToStudent(chatMessageToStudent);
+        } else if (msg instanceof TimeRemaining) {
+            TimeRemaining timeRemaining = (TimeRemaining)msg;
+            cController.setTimeRemaining(timeRemaining.getTimeRemaing());
         }
-        // Echo back the received object to the server.
-        //CLClientArrived settings = (CLClientArrived)msg;
-        //ctx.write(msg);
-        //System.out.println(settings.getName());
+
     }
 
     @Override
