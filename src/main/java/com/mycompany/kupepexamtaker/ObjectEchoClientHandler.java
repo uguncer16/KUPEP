@@ -26,7 +26,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static io.netty.channel.ChannelFutureListener.FIRE_EXCEPTION_ON_FAILURE;
+import java.io.File;
+import java.io.IOException;
 import java.net.UnknownHostException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import org.apache.commons.io.FileUtils;
 
 /**
  * Handler implementation for the object echo client.  It initiates the
@@ -63,6 +68,13 @@ public class ObjectEchoClientHandler extends ChannelInboundHandlerAdapter {
         } else if (msg instanceof TimeRemaining) {
             TimeRemaining timeRemaining = (TimeRemaining)msg;
             cController.setTimeRemaining(timeRemaining.getTimeRemaing());
+        } else if (msg instanceof ExamSetting) {
+            ExamSetting examSetting = (ExamSetting)msg;
+            cController.setExamSetting(examSetting);
+        } else if (msg instanceof FileMessage) {
+            FileMessage fm = (FileMessage)msg;
+            cController.setExamFile(fm);
+
         }
 
     }

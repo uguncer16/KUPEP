@@ -8,6 +8,9 @@ package com.mycompany.classes;
 import java.io.Serializable;
 
 public class ExamSetting implements Serializable{
+    private String courseCode;
+
+
     private String examinersName;
     private String examinersSurname;
     private String examStartTime;
@@ -22,6 +25,13 @@ public class ExamSetting implements Serializable{
     public ExamSetting() {
     }
 
+    public void setCourseCode(String courseCode) {
+        this.courseCode = courseCode;
+    }
+
+    public String getCourseCode() {
+        return courseCode;
+    }
     public String getExamFile() {
         return examFile;
     }

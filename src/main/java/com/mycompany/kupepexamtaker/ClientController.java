@@ -8,10 +8,36 @@ import com.mycompany.classes.*;
 import io.netty.channel.ChannelFuture;
 import static io.netty.channel.ChannelFutureListener.FIRE_EXCEPTION_ON_FAILURE;
 import io.netty.channel.ChannelHandlerContext;
+import java.io.File;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import org.apache.commons.io.FileUtils;
 
 public class ClientController {
     private ExamTaker examTakerGUI;
     ChannelHandlerContext ctx;
+    ExamSetting examSetting;
+    FileMessage fm;
+    
+    public void setExamFile(FileMessage fm) {
+            try {
+                this.fm = fm;
+                FileUtils.writeByteArrayToFile(new File(fm.getFile().getName()), fm.getBytes());
+                examTakerGUI.setExamInformation(true);
+            } catch (IOException ex) {
+                Logger.getLogger(ObjectEchoClientHandler.class.getName()).log(Level.SEVERE, null, ex);
+            }
+    }
+    
+    public String getExamFile(){
+        return fm.getFile().getName();
+    }
+    
+    public void setExamSetting(ExamSetting examSetting) {
+        this.examSetting = examSetting;
+        examTakerGUI.updateExamSettings(examSetting);
+    }
 
     public void setCtx(ChannelHandlerContext ctx) {
         this.ctx = ctx;

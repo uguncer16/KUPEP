@@ -22,8 +22,11 @@ package com.mycompany.kupepexamtaker;
 import com.mycompany.classes.*;
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Desktop;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -43,7 +46,9 @@ public class ExamTaker extends javax.swing.JFrame {
 
     public ExamTaker(ClientController cController) {
         this.cController = cController;
+
          initComponents();
+                 jLabel22.setText(System.getProperty("user.name"));
     }
  class connectionColumnCellRenderer extends DefaultTableCellRenderer {
 
@@ -181,15 +186,15 @@ public void receiveChatMessageToStudent(ChatMessageToStudent chatMessageToStuden
 
         jLabel9.setText("Examiner's Name :");
 
-        jLabel10.setText("Serkan");
+        jLabel10.setText("-");
 
         jLabel11.setText("Examiner's Surname :");
 
         jLabel12.setText("Course Code :");
 
-        jLabel13.setText("Student's Name");
+        jLabel13.setText("User's Name");
 
-        jLabel14.setText("Student's Surname");
+        jLabel14.setText("Exam Start Time");
 
         jLabel15.setText("Permitted File Extensions :");
 
@@ -201,28 +206,28 @@ public void receiveChatMessageToStudent(ChatMessageToStudent chatMessageToStuden
 
         jLabel19.setText("Computer number :");
 
-        jLabel20.setText("Çil");
+        jLabel20.setText("-");
 
-        jLabel21.setText("Comp 491");
+        jLabel21.setText("-");
 
-        jLabel22.setText("Umut ");
+        jLabel22.setText("-");
 
-        jLabel23.setText("Günçer");
+        jLabel23.setText("-");
 
-        jLabel24.setText("Examiner's Name");
+        jLabel24.setText("-");
 
         jLabel25.setText("20");
 
         jLabel26.setText("KUPEP");
 
-        jLabel27.setText("Enabled");
+        jLabel27.setText("-");
 
-        jLabel28.setText("Enabled");
+        jLabel28.setText("-");
 
-        jLabel29.setText("Disabled");
+        jLabel29.setText("-");
 
         jLabel30.setFont(new java.awt.Font("Tahoma", 1, 24)); // NOI18N
-        jLabel30.setText("01:50:00");
+        jLabel30.setText("-:-:-");
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -334,6 +339,7 @@ public void receiveChatMessageToStudent(ChatMessageToStudent chatMessageToStuden
         jPanel6.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
 
         jButton2.setText("Exam Information");
+        jButton2.setEnabled(false);
         jButton2.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton2ActionPerformed(evt);
@@ -341,8 +347,10 @@ public void receiveChatMessageToStudent(ChatMessageToStudent chatMessageToStuden
         });
 
         jButton3.setText("Browse Local Files");
+        jButton3.setEnabled(false);
 
         jButton4.setText("Submit");
+        jButton4.setEnabled(false);
 
         javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
         jPanel6.setLayout(jPanel6Layout);
@@ -371,23 +379,28 @@ public void receiveChatMessageToStudent(ChatMessageToStudent chatMessageToStuden
         jTextArea3.setColumns(20);
         jTextArea3.setRows(5);
         jTextArea3.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        jTextArea3.setEnabled(false);
         jScrollPane3.setViewportView(jTextArea3);
 
         jTextArea2.setEditable(false);
         jTextArea2.setColumns(20);
         jTextArea2.setRows(5);
+        jTextArea2.setEnabled(false);
         jScrollPane2.setViewportView(jTextArea2);
 
-        jLabel1.setText("Serkan");
+        jLabel1.setText("-");
 
         jLabel2.setText("Examiner's Surname :");
 
         jTextArea1.setColumns(20);
         jTextArea1.setRows(5);
         jTextArea1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        jTextArea1.setEnabled(false);
         jScrollPane1.setViewportView(jTextArea1);
 
         jButton1.setText("SEND");
+        jButton1.setEnabled(false);
+        jButton1.setFocusable(false);
         jButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton1ActionPerformed(evt);
@@ -396,7 +409,7 @@ public void receiveChatMessageToStudent(ChatMessageToStudent chatMessageToStuden
 
         jLabel3.setText("Examiner's Name :");
 
-        jLabel4.setText("Çil");
+        jLabel4.setText("-");
 
         jLabel5.setText("Private Message");
 
@@ -467,6 +480,7 @@ public void receiveChatMessageToStudent(ChatMessageToStudent chatMessageToStuden
         jLabel31.setText("Enabled");
 
         jToggleButton1.setText("SEND HELP");
+        jToggleButton1.setEnabled(false);
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
@@ -531,8 +545,32 @@ public void receiveChatMessageToStudent(ChatMessageToStudent chatMessageToStuden
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         // TODO add your handling code here:
+        File foler = new File(cController.getExamFile()); // path to the directory to be opened
+        Desktop desktop = null;
+        if (Desktop.isDesktopSupported()) {
+        desktop = Desktop.getDesktop();
+        }
+
+        try {
+        desktop.open(foler);
+        } catch (IOException e) {
+        }
     }//GEN-LAST:event_jButton2ActionPerformed
 
+    public void setExamInformation(boolean i) {
+            jButton2.setEnabled(i);
+    }
+    public void updateExamSettings(ExamSetting examSetting) {
+        jLabel10.setText(examSetting.getExaminersName());
+        jLabel20.setText(examSetting.getExaminersSurname());
+        jLabel1.setText(examSetting.getExaminersName());
+        jLabel4.setText(examSetting.getExaminersSurname());
+        jLabel21.setText(examSetting.getCourseCode());
+        jLabel23.setText(examSetting.getExamStartTime());
+        
+        
+    }
+    
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         // TODO add your handling code here:
         String message = jTextArea1.getText();
