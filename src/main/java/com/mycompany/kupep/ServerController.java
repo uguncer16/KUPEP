@@ -9,6 +9,7 @@ import com.mycompany.classes.*;
 import io.netty.channel.ChannelFuture;
 import static io.netty.channel.ChannelFutureListener.FIRE_EXCEPTION_ON_FAILURE;
 import io.netty.channel.ChannelHandlerContext;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Timer;
@@ -23,6 +24,15 @@ public class ServerController {
     private ExamSetting examSetting;
     private int timeRemaining;
     private Timer timer;
+    private boolean examStarted;
+
+    public boolean isExamStarted() {
+        return examStarted;
+    }
+
+    public void setExamStarted(boolean examStarted) {
+        this.examStarted = examStarted;
+    }
 
     public void setMiniChat(MiniChat miniChat) {
         this.miniChat = miniChat;
@@ -35,6 +45,7 @@ public class ServerController {
     void updateExamSettings(){
         examinerFormGUI.updateExamSettings(examSetting);
         this.timeRemaining = examSetting.getExamDuration()*60;
+        sendExamSetting();
         
         
     }
@@ -46,6 +57,7 @@ public class ServerController {
         this.miniChat = null;
         this.examSettingsForm = null;
         this.timer = new Timer();
+        this.examStarted = false;
     }
     
     public void startExam(){
@@ -61,8 +73,21 @@ public class ServerController {
         }
     };
     timer.scheduleAtFixedRate(task, 0, 1000); //1000ms = 1sec
+    this.examStarted = true;
+    //FileMessage fm = new FileMessage(new File("Coursework.zip"));
+    //sendMessageToAllStudents(fm);
     }
     
+    public void sendExamSetting(){
+
+    
+        sendMessageToAllStudents(this.examSetting);
+    }
+    
+    public void sendExamFile() {
+       FileMessage fm = new FileMessage(new File(this.examSetting.getExamFile()));
+        sendMessageToAllStudents(fm);
+    }
     public String getTimeRemaining(){
       String hh = String.format("%02d",timeRemaining/3600)+":";
       String mm = String.format("%02d",timeRemaining/60%60)+":";
