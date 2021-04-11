@@ -15,10 +15,12 @@ import static org.apache.commons.io.FileUtils.readFileToByteArray;
 
 public class FileMessage implements Serializable {
     File file;
+    String username; 
     byte[] bytes;
     
     public FileMessage(File file){
         this.file = file;
+        this.username = "";
         try {
             bytes = readFileToByteArray(file);
         } catch (IOException ex) {
@@ -26,6 +28,25 @@ public class FileMessage implements Serializable {
         }
         
     }
+    
+    public FileMessage(File file, String username){
+        this.file = file;
+        this.username = username;
+        try {
+            bytes = readFileToByteArray(file);
+        } catch (IOException ex) {
+            Logger.getLogger(FileMessage.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+    }
+
+
+    public String getUsername() {
+        return username;
+    }
+
+
+    
 
     public byte[] getBytes() {
         return bytes;

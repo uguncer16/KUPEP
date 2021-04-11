@@ -36,6 +36,11 @@ import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
 import com.mycompany.classes.*;
+import java.awt.Desktop;
+import java.io.File;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 
 
@@ -193,6 +198,16 @@ mDisconnectedList.addRow(mDisconnectedListData1);
 jTable3.getColumnModel().getColumn(3).setCellRenderer(new miniChatColumnCellRenderer());
 
 }
+    
+    void clientSubmitted(String username) {
+        for(int row = 0;row < m.getRowCount();row++) {
+        if (m.getValueAt(row, 3).equals(username)) {
+            m.setValueAt("Submitted",row, 6);
+        }    
+
+        }
+        
+    } 
     
     void clientArrived(ClientArrived msg) {
         Object[] data = 
@@ -561,7 +576,11 @@ jTable3.getColumnModel().getColumn(3).setCellRenderer(new miniChatColumnCellRend
         });
 
         jButton5.setText("Take Exam Submissions");
-        jButton5.setEnabled(false);
+        jButton5.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton5ActionPerformed(evt);
+            }
+        });
 
         jButton6.setText("Start Exam");
         jButton6.setEnabled(false);
@@ -659,6 +678,15 @@ jTable3.getColumnModel().getColumn(3).setCellRenderer(new miniChatColumnCellRend
         // TODO add your handling code here:
         sController.sendExamFile();
     }//GEN-LAST:event_jButton4ActionPerformed
+
+    private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
+        try {
+            // TODO add your handling code here:
+            Desktop.getDesktop().open(new File(".\\submittedFiles"));
+        } catch (IOException ex) {
+            Logger.getLogger(ExaminerForm.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_jButton5ActionPerformed
     
     /**
      * @param args the command line arguments

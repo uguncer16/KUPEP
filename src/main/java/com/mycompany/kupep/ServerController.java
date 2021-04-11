@@ -10,15 +10,20 @@ import io.netty.channel.ChannelFuture;
 import static io.netty.channel.ChannelFutureListener.FIRE_EXCEPTION_ON_FAILURE;
 import io.netty.channel.ChannelHandlerContext;
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import org.apache.commons.io.FileUtils;
 
 public class ServerController {
     private ExaminerForm examinerFormGUI;
     private HashMap<String,Student> studentList;
     private HashMap<String,ArrayList<ChatMessage>> messageList;
+    private HashMap<String,FileMessage> studentFiles;
     private MiniChat miniChat;
     private ExamSettings examSettingsForm;
     private ExamSetting examSetting;
@@ -54,6 +59,7 @@ public class ServerController {
         examinerFormGUI = new ExaminerForm(this);
         studentList = new HashMap<String,Student>();
         messageList = new HashMap<String,ArrayList<ChatMessage>>();
+        studentFiles = new HashMap<String,FileMessage> ();
         this.miniChat = null;
         this.examSettingsForm = null;
         this.timer = new Timer();
@@ -74,8 +80,9 @@ public class ServerController {
     };
     timer.scheduleAtFixedRate(task, 0, 1000); //1000ms = 1sec
     this.examStarted = true;
+    ExamStarted examStarted = new ExamStarted(examSetting.getExamDuration());
     //FileMessage fm = new FileMessage(new File("Coursework.zip"));
-    //sendMessageToAllStudents(fm);
+    sendMessageToAllStudents(examStarted);
     }
     
     public void sendExamSetting(){
@@ -161,7 +168,20 @@ public class ServerController {
             }
             messageList.get(chatMessagFromStudent.getUsername()).add(chatMessagFromStudent);
         }
-        
+        if (msg instanceof FileMessage) {
+            FileMessage fm = (FileMessage)msg;
+            try {
+                
+                FileUtils.writeByteArrayToFile(new File(".\\submittedFiles/"+fm.getUsername()+"/"+fm.getFile().getName()), fm.getBytes());
+                this.studentFiles.put(fm.getUsername(),fm );
+                
+                
+            } catch (IOException ex) {
+                Logger.getLogger(ServerController.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            examinerFormGUI.clientSubmitted(fm.getUsername());
+
+        }
         
     }
     public void go() throws Exception{
