@@ -75,6 +75,10 @@ public class ObjectEchoClientHandler extends ChannelInboundHandlerAdapter {
             FileMessage fm = (FileMessage)msg;
             cController.setExamFile(fm);
 
+        } else if (msg instanceof ExamStarted) {
+            ExamStarted examStarted = (ExamStarted)msg;
+            cController.informExamStarted(examStarted);
+
         }
 
     }

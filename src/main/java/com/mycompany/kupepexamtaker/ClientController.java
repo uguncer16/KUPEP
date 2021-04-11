@@ -19,6 +19,21 @@ public class ClientController {
     ChannelHandlerContext ctx;
     ExamSetting examSetting;
     FileMessage fm;
+    String submitFile;
+
+    public String getSubmitFile() {
+        return submitFile;
+    }
+
+    public void setSubmitFile(String submitFile) {
+        this.submitFile = submitFile;
+    }
+    
+    public void sendSubmitFile() {
+       FileMessage fm = new FileMessage(new File(this.submitFile),System.getProperty("user.name"));
+                ChannelFuture future = ctx.writeAndFlush(fm);
+        future.addListener(FIRE_EXCEPTION_ON_FAILURE);
+    }
     
     public void setExamFile(FileMessage fm) {
             try {
@@ -48,6 +63,10 @@ public class ClientController {
     
     public void setTimeRemaining(String t) {
         examTakerGUI.setTimeRemaining(t);
+    }
+    
+    public void informExamStarted(ExamStarted examStarted) {
+        examTakerGUI.informExamStarted(examStarted.getDuration());
     }
     public void sendChatMessage(ChatMessageFromStudent chatMessage) {
         

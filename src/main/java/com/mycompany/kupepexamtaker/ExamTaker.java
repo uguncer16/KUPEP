@@ -34,6 +34,7 @@ import javax.swing.DefaultCellEditor;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.DefaultTableCellRenderer;
@@ -97,6 +98,10 @@ public void setTimeRemaining(String t) {
     jLabel30.setText(t);
 }
 
+public void informExamStarted(int duration) {
+    JOptionPane.showMessageDialog(this,String.format("Exam has started. You have %d minutes. Goodluck!", duration)); 
+    jButton3.setEnabled(true);
+} 
 public void receiveChatMessageToStudent(ChatMessageToStudent chatMessageToStudent) {
     String textSoFar = jTextArea2.getText();
     textSoFar += ">" + chatMessageToStudent.getTime() + ":" + chatMessageToStudent.getMessage() +"\n";
@@ -146,6 +151,7 @@ public void receiveChatMessageToStudent(ChatMessageToStudent chatMessageToStuden
         jButton2 = new javax.swing.JButton();
         jButton3 = new javax.swing.JButton();
         jButton4 = new javax.swing.JButton();
+        jLabel32 = new javax.swing.JLabel();
         jPanel2 = new javax.swing.JPanel();
         jScrollPane3 = new javax.swing.JScrollPane();
         jTextArea3 = new javax.swing.JTextArea();
@@ -348,9 +354,21 @@ public void receiveChatMessageToStudent(ChatMessageToStudent chatMessageToStuden
 
         jButton3.setText("Browse Local Files");
         jButton3.setEnabled(false);
+        jButton3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton3ActionPerformed(evt);
+            }
+        });
 
         jButton4.setText("Submit");
         jButton4.setEnabled(false);
+        jButton4.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton4ActionPerformed(evt);
+            }
+        });
+
+        jLabel32.setText("-");
 
         javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
         jPanel6.setLayout(jPanel6Layout);
@@ -361,7 +379,8 @@ public void receiveChatMessageToStudent(ChatMessageToStudent chatMessageToStuden
                 .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(jButton4, javax.swing.GroupLayout.DEFAULT_SIZE, 150, Short.MAX_VALUE)
                     .addComponent(jButton3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jButton2, javax.swing.GroupLayout.DEFAULT_SIZE, 150, Short.MAX_VALUE))
+                    .addComponent(jButton2, javax.swing.GroupLayout.DEFAULT_SIZE, 150, Short.MAX_VALUE)
+                    .addComponent(jLabel32, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap(52, Short.MAX_VALUE))
         );
         jPanel6Layout.setVerticalGroup(
@@ -371,7 +390,9 @@ public void receiveChatMessageToStudent(ChatMessageToStudent chatMessageToStuden
                 .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(33, 33, 33)
                 .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(29, 29, 29)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel32)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jButton4, javax.swing.GroupLayout.PREFERRED_SIZE, 74, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
@@ -543,6 +564,13 @@ public void receiveChatMessageToStudent(ChatMessageToStudent chatMessageToStuden
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    public void setSubmitFile(String path){
+        jLabel32.setText(path);
+        jButton4.setEnabled(true);
+        cController.setSubmitFile(path);
+        
+    }
+    
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         // TODO add your handling code here:
         File foler = new File(cController.getExamFile()); // path to the directory to be opened
@@ -559,6 +587,7 @@ public void receiveChatMessageToStudent(ChatMessageToStudent chatMessageToStuden
 
     public void setExamInformation(boolean i) {
             jButton2.setEnabled(i);
+            JOptionPane.showMessageDialog(this,String.format("Exam information has been received!")); 
     }
     public void updateExamSettings(ExamSetting examSetting) {
         jLabel10.setText(examSetting.getExaminersName());
@@ -581,6 +610,16 @@ public void receiveChatMessageToStudent(ChatMessageToStudent chatMessageToStuden
         textSoFar += ">>" + chatMessage.getTime() + ":" + chatMessage.getMessage()+"\n";
         jTextArea2.setText(textSoFar );
     }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+        // TODO add your handling code here:
+        new BrowseSubmitFile(this);
+    }//GEN-LAST:event_jButton3ActionPerformed
+
+    private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
+        // TODO add your handling code here:
+        cController.sendSubmitFile();
+    }//GEN-LAST:event_jButton4ActionPerformed
     
     
     
@@ -615,6 +654,7 @@ public void receiveChatMessageToStudent(ChatMessageToStudent chatMessageToStuden
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel30;
     private javax.swing.JLabel jLabel31;
+    private javax.swing.JLabel jLabel32;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
