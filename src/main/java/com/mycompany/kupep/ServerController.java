@@ -30,6 +30,7 @@ public class ServerController {
     private int timeRemaining;
     private Timer timer;
     private boolean examStarted;
+    private AddExtraTime addExtraTimeForm;
 
     public boolean isExamStarted() {
         return examStarted;
@@ -47,6 +48,15 @@ public class ServerController {
         this.examSettingsForm = examSettingsForm;
     }
     
+    public void addExtraTime(int t) {
+        timeRemaining += t*60;
+        ExamExtended examExtended = new ExamExtended(t);
+        sendMessageToAllStudents(examExtended);
+    }
+    
+    public void setAddExtraTimeForm(AddExtraTime e) {
+        this.addExtraTimeForm = e;
+    }
     void updateExamSettings(){
         examinerFormGUI.updateExamSettings(examSetting);
         this.timeRemaining = examSetting.getExamDuration()*60;
@@ -75,6 +85,11 @@ public class ServerController {
                 examinerFormGUI.updateTimeRemaining(getTimeRemaining());
                 TimeRemaining tr = new TimeRemaining(getTimeRemaining());
                 sendMessageToAllStudents(tr);
+                if (timeRemaining==0) {
+                    ExamStopped examStopped = new ExamStopped();
+                    sendMessageToAllStudents(examStopped);
+                    cancel();
+                }
                 
         }
     };
@@ -83,6 +98,7 @@ public class ServerController {
     ExamStarted examStarted = new ExamStarted(examSetting.getExamDuration());
     //FileMessage fm = new FileMessage(new File("Coursework.zip"));
     sendMessageToAllStudents(examStarted);
+    examinerFormGUI.enableButtonsAfterStartExam();
     }
     
     public void sendExamSetting(){
@@ -113,6 +129,12 @@ public class ServerController {
         }
                 
 
+    }
+    
+    public void openAddExtraTime(){
+                if (this.addExtraTimeForm==null) {
+                    this.addExtraTimeForm =  new AddExtraTime(this);    
+                }
     }
     
     public void openChat(String username){

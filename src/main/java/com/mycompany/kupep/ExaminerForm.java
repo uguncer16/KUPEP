@@ -219,6 +219,11 @@ jTable3.getColumnModel().getColumn(3).setCellRenderer(new miniChatColumnCellRend
     void updateTimeRemaining(String timeRemaining){
         jLabel8.setText(timeRemaining);
     }
+    
+    void enableButtonsAfterStartExam() {
+        jButton2.setEnabled(true);
+        jButton5.setEnabled(true);
+    }
     void updateExamSettings(ExamSetting e){
         jLabel5.setText(e.getExaminersName());
         jLabel9.setText(e.getExaminersSurname());
@@ -473,7 +478,7 @@ jTable3.getColumnModel().getColumn(3).setCellRenderer(new miniChatColumnCellRend
                 .addGap(0, 7, Short.MAX_VALUE))
         );
 
-        jPanel3.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        jPanel3.setBorder(javax.swing.BorderFactory.createTitledBorder("Help List"));
 
         jTable2.setModel(new DefaultTableModel());
         jScrollPane1.setViewportView(jTable2);
@@ -489,9 +494,10 @@ jTable3.getColumnModel().getColumn(3).setCellRenderer(new miniChatColumnCellRend
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel3Layout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 108, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
         );
 
         jPanel6.setBorder(javax.swing.BorderFactory.createTitledBorder("Quick Settings"));
@@ -532,7 +538,7 @@ jTable3.getColumnModel().getColumn(3).setCellRenderer(new miniChatColumnCellRend
                 .addContainerGap())
         );
 
-        jPanel4.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        jPanel4.setBorder(javax.swing.BorderFactory.createTitledBorder("Disconnected Users -Not Submitted Only-"));
 
         jTable3.setModel(new DefaultTableModel());
         jScrollPane3.setViewportView(jTable3);
@@ -564,6 +570,11 @@ jTable3.getColumnModel().getColumn(3).setCellRenderer(new miniChatColumnCellRend
 
         jButton2.setText("Add Extra Time");
         jButton2.setEnabled(false);
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
 
         jButton3.setText("Send Public Message");
 
@@ -687,6 +698,11 @@ jTable3.getColumnModel().getColumn(3).setCellRenderer(new miniChatColumnCellRend
             Logger.getLogger(ExaminerForm.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_jButton5ActionPerformed
+
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        // TODO add your handling code here:
+        sController.openAddExtraTime();
+    }//GEN-LAST:event_jButton2ActionPerformed
     
     /**
      * @param args the command line arguments
