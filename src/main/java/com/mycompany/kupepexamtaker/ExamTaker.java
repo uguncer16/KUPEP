@@ -102,6 +102,17 @@ public void informExamStarted(int duration) {
     JOptionPane.showMessageDialog(this,String.format("Exam has started. You have %d minutes. Goodluck!", duration)); 
     jButton3.setEnabled(true);
 } 
+public void informExamExtended(int duration) {
+    JOptionPane.showMessageDialog(this,String.format("Exam has been extended %d minutes. ", duration)); 
+    
+} 
+
+public void informExamStopped() {
+    JOptionPane.showMessageDialog(this,String.format("Exam is over!")); 
+    jButton3.setEnabled(false);
+    jButton4.setEnabled(false);
+} 
+
 public void receiveChatMessageToStudent(ChatMessageToStudent chatMessageToStudent) {
     String textSoFar = jTextArea2.getText();
     textSoFar += ">" + chatMessageToStudent.getTime() + ":" + chatMessageToStudent.getMessage() +"\n";

@@ -80,6 +80,18 @@ public class ObjectEchoClientHandler extends ChannelInboundHandlerAdapter {
             cController.informExamStarted(examStarted);
 
         }
+         else if (msg instanceof ExamExtended) {
+            ExamExtended examExtended = (ExamExtended)msg;
+            cController.informExamExtended(examExtended);
+
+        }
+         else if (msg instanceof ExamStopped) {
+            ExamStopped examStopped = (ExamStopped)msg;
+            cController.informExamStopped(examStopped);
+
+        }
+
+
 
     }
 

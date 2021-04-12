@@ -68,6 +68,14 @@ public class ClientController {
     public void informExamStarted(ExamStarted examStarted) {
         examTakerGUI.informExamStarted(examStarted.getDuration());
     }
+    
+    public void informExamExtended(ExamExtended examExtended) {
+        examTakerGUI.informExamExtended(examExtended.getDuration());
+    }
+    
+    public void informExamStopped(ExamStopped examStopped) {
+        examTakerGUI.informExamStopped();
+    }
     public void sendChatMessage(ChatMessageFromStudent chatMessage) {
         
         ChannelFuture future = ctx.writeAndFlush(chatMessage);
