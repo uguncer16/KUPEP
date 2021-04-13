@@ -17,7 +17,7 @@ public class ExamSetting implements Serializable{
     private String examFile;
     private int examDuration;
     private boolean internetEnabled;
-    private boolean pmEnabled;
+    private boolean helpEnabled;
     private boolean usbEnabled;
     private String bannedSites;
     private String permittedFileExtensions;
@@ -83,12 +83,12 @@ public class ExamSetting implements Serializable{
         this.internetEnabled = internetEnabled;
     }
 
-    public boolean isPmEnabled() {
-        return pmEnabled;
+    public boolean isHelpEnabled() {
+        return helpEnabled;
     }
 
-    public void setPmEnabled(boolean pmEnabled) {
-        this.pmEnabled = pmEnabled;
+    public void setHelpEnabled(boolean helpEnabled) {
+        this.helpEnabled = helpEnabled;
     }
 
     public boolean isUsbEnabled() {

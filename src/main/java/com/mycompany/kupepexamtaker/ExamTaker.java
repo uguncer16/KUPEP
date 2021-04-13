@@ -513,6 +513,11 @@ public void receiveChatMessageToStudent(ChatMessageToStudent chatMessageToStuden
 
         jToggleButton1.setText("SEND HELP");
         jToggleButton1.setEnabled(false);
+        jToggleButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jToggleButton1ActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
@@ -607,6 +612,7 @@ public void receiveChatMessageToStudent(ChatMessageToStudent chatMessageToStuden
         jLabel4.setText(examSetting.getExaminersSurname());
         jLabel21.setText(examSetting.getCourseCode());
         jLabel23.setText(examSetting.getExamStartTime());
+        jToggleButton1.setEnabled(examSetting.isHelpEnabled());
         
         
     }
@@ -631,6 +637,19 @@ public void receiveChatMessageToStudent(ChatMessageToStudent chatMessageToStuden
         // TODO add your handling code here:
         cController.sendSubmitFile();
     }//GEN-LAST:event_jButton4ActionPerformed
+
+    private void jToggleButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jToggleButton1ActionPerformed
+        // TODO add your handling code here:
+        if (evt.getActionCommand()=="SEND HELP") {
+            cController.helpNeeded(true);
+            jToggleButton1.setText("CANCEL HELP");
+            jToggleButton1.setActionCommand("CANCEL HELP");
+        } else {
+            cController.helpNeeded(false);
+            jToggleButton1.setText("SEND HELP");
+            jToggleButton1.setActionCommand("SEND HELP");
+        }
+    }//GEN-LAST:event_jToggleButton1ActionPerformed
     
     
     

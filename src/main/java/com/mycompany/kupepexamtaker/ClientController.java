@@ -10,6 +10,10 @@ import static io.netty.channel.ChannelFutureListener.FIRE_EXCEPTION_ON_FAILURE;
 import io.netty.channel.ChannelHandlerContext;
 import java.io.File;
 import java.io.IOException;
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.apache.commons.io.FileUtils;
@@ -20,7 +24,16 @@ public class ClientController {
     ExamSetting examSetting;
     FileMessage fm;
     String submitFile;
+    private Timer timer;
+    TimerTask task;
 
+    public void helpNeeded(boolean b) {
+        HelpNeeded h = new HelpNeeded(System.getProperty("user.name"),b);
+        ChannelFuture future = ctx.writeAndFlush(h);
+        future.addListener(FIRE_EXCEPTION_ON_FAILURE);
+        
+    }
+    
     public String getSubmitFile() {
         return submitFile;
     }
@@ -56,11 +69,27 @@ public class ClientController {
 
     public void setCtx(ChannelHandlerContext ctx) {
         this.ctx = ctx;
+        task = new TimerTask(){
+        public void run(){
+              IAMAlive a = new IAMAlive(System.getProperty("user.name"));
+              sendMessage(a);
+              
+                
+        }
+    };
+    timer.scheduleAtFixedRate(task, 0, 10000); //1000ms = 1sec
     }
     public ClientController(){
         examTakerGUI = new ExamTaker(this);
+        this.timer = new Timer();
+
     }
     
+
+    
+    public void sendMessage(Object msg){
+        ChannelFuture future = ctx.writeAndFlush(msg);
+    }
     public void setTimeRemaining(String t) {
         examTakerGUI.setTimeRemaining(t);
     }
