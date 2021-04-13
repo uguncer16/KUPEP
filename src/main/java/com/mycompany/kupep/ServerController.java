@@ -19,22 +19,31 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.apache.commons.io.FileUtils;
 
+import java.time.*;
+
 public class ServerController {
     private ExaminerForm examinerFormGUI;
     private HashMap<String,Student> studentList;
     private HashMap<String,ArrayList<ChatMessage>> messageList;
+    private HashMap<String,Boolean> helpList;
     private HashMap<String,FileMessage> studentFiles;
     private MiniChat miniChat;
     private ExamSettings examSettingsForm;
     private ExamSetting examSetting;
     private int timeRemaining;
     private Timer timer;
+    private Timer timer2;
     private boolean examStarted;
     private AddExtraTime addExtraTimeForm;
+    private HashMap<String,LocalDateTime> lastSeen;
 
     public boolean isExamStarted() {
         return examStarted;
     }
+
+
+
+
 
     public void setExamStarted(boolean examStarted) {
         this.examStarted = examStarted;
@@ -65,18 +74,54 @@ public class ServerController {
         
     }
     
+    void helpEnabled(boolean b){
+        examSetting.setHelpEnabled(b);
+        sendExamSetting();
+        
+    }
+    void usbEnabled(boolean b){
+        examSetting.setUsbEnabled(b);
+        sendExamSetting();
+        
+    }
+    
     public ServerController(){
         examinerFormGUI = new ExaminerForm(this);
         studentList = new HashMap<String,Student>();
         messageList = new HashMap<String,ArrayList<ChatMessage>>();
         studentFiles = new HashMap<String,FileMessage> ();
+        helpList = new HashMap<String,Boolean>();
+        lastSeen = new HashMap<String,LocalDateTime> ();
         this.miniChat = null;
         this.examSettingsForm = null;
         this.timer = new Timer();
+        this.timer2 = new Timer();
         this.examStarted = false;
+        this.examSetting = new ExamSetting();
+    }
+    
+    public void updateLastSeen(String s) {
+        lastSeen.put(s,LocalDateTime.now());
+    }
+    
+    public void checkWhoIsOnline(){
+        TimerTask task = new TimerTask(){
+        public void run(){
+            examinerFormGUI.clearDisconnectedList();
+            for (String u:lastSeen.keySet()) {
+                LocalDateTime lastSeenAt = lastSeen.get(u);
+                if (Duration.between(lastSeenAt,LocalDateTime.now()).toSeconds()>=30 && !studentFiles.containsKey(u) ){
+                    examinerFormGUI.populateDisconnectedList(studentList.get(u), lastSeenAt);
+                }
+            }
+                
+        }
+    };
+        timer2.scheduleAtFixedRate(task, 0, 10000); //1000ms = 1sec
     }
     
     public void startExam(){
+        checkWhoIsOnline();
         TimerTask task = new TimerTask(){
         private int i = 0;
         public void run(){
@@ -203,6 +248,22 @@ public class ServerController {
             }
             examinerFormGUI.clientSubmitted(fm.getUsername());
 
+        }
+        if (msg instanceof HelpNeeded) {
+            HelpNeeded h = (HelpNeeded)msg;
+            helpList.put(h.getUsername(), h.isHelpNeeded());
+            if (h.isHelpNeeded()) {
+                if (studentList.containsKey(h.getUsername()))
+                    examinerFormGUI.clientNeedsHelp(studentList.get(h.getUsername()));
+            } else {
+                if (studentList.containsKey(h.getUsername()))
+                    examinerFormGUI.clientCancelsHelp(studentList.get(h.getUsername()));
+            }
+            
+        }
+        if (msg instanceof IAMAlive) {
+            IAMAlive h = (IAMAlive)msg;
+            updateLastSeen(h.getUsername());
         }
         
     }

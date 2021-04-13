@@ -39,14 +39,18 @@ import com.mycompany.classes.*;
 import java.awt.Desktop;
 import java.io.File;
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.time.LocalTime;
 
 
 
 public class ExaminerForm extends javax.swing.JFrame {
     
     DefaultTableModel m ;
+    DefaultTableModel mHelpList ;
+    DefaultTableModel mDisconnectedList;
     ServerController sController;
 
     
@@ -143,16 +147,6 @@ m.addColumn("Sumission Status");
 m.addColumn("Mini Chat");
 m.addColumn("PM Enabled");
 
-//Object[] data1 = 
-//    {"1", "Windows", "128.64.1.29","Umut", "Günçer", "4331", "YES", "Submitted", "Open", "ON"  };
-//Object[] data2 = 
-//    {"1", "Windows", "128.64.1.29","Umut", "Günçer", "4331", "NO", "Submitted", "New", "OFF"  };
-//
-//m.addRow(data1);
-//m.addRow(data2);
-
-
-
 
 ButtonColumn btnMiniChat = new ButtonColumn(jTable1, openMiniChat, 7);
 ButtonColumn btnPmEnabled = new ButtonColumn(jTable1, togglePmEnabled, 8);
@@ -164,41 +158,63 @@ jTable1.getColumnModel().getColumn(7).setCellRenderer(new miniChatColumnCellRend
 jTable1.getColumnModel().getColumn(8).setCellRenderer(new pmEnabledColumnCellRenderer());
 
 
-DefaultTableModel mHelpList = (DefaultTableModel)jTable2.getModel();
-mHelpList.addColumn("Name");
-mHelpList.addColumn("Surname");
+mHelpList = (DefaultTableModel)jTable2.getModel();
+mHelpList.addColumn("Username");
 mHelpList.addColumn("PC No");
 mHelpList.addColumn("Student Help");
 mHelpList.addColumn("Mini Chat");
 mHelpList.addColumn("Time");
 
-Object[] mHelpListData1 = 
-    {"Umut", "Günçer", "11", "OK","Open", "13:10"  };
 
-
-mHelpList.addRow(mHelpListData1);
 
 jTable2.getColumnModel().getColumn(3).setCellRenderer(new miniChatColumnCellRenderer());
     
 
 
-DefaultTableModel mDisconnectedList = (DefaultTableModel)jTable3.getModel();
-mDisconnectedList.addColumn("Name");
-mDisconnectedList.addColumn("Surname");
+mDisconnectedList = (DefaultTableModel)jTable3.getModel();
+mDisconnectedList.addColumn("Username");
 mDisconnectedList.addColumn("PC No");
 mDisconnectedList.addColumn("Student Help");
 mDisconnectedList.addColumn("Time");
 
-Object[] mDisconnectedListData1 = 
-    {"Taluhan", "Ones", "3", "OK", "13:10"  };
-
-
-mDisconnectedList.addRow(mDisconnectedListData1);
 
 jTable3.getColumnModel().getColumn(3).setCellRenderer(new miniChatColumnCellRenderer());
 
 }
+void clearDisconnectedList() {
+    for(int row = 0;row < mDisconnectedList.getRowCount();row++) {
+        mDisconnectedList.removeRow(row);
+        
+    }
+}     
+void populateDisconnectedList(Student s, LocalDateTime lastSeen){
+    Object[] mDisconnectedListData1 = 
+    {s.getUsername(), "3", "OK", lastSeen.toLocalTime()  };
+    mDisconnectedList.addRow(mDisconnectedListData1);
+
+}
     
+    void clientNeedsHelp(Student s){
+        
+        Object[] mHelpListData1 = 
+                {s.getUsername(), "11", "OK","Open", LocalTime.now() };        
+        
+
+        mHelpList.addRow(mHelpListData1);           
+    }
+    void clientCancelsHelp(Student s){
+        
+        for(int row = 0;row < m.getRowCount();row++) {
+        if (mHelpList.getValueAt(row, 0).equals(s.getUsername())) {
+            mHelpList.removeRow(row);
+        }    
+
+        }
+
+
+        //mHelpList.addRow(mHelpListData1);           
+    }
+
     void clientSubmitted(String username) {
         for(int row = 0;row < m.getRowCount();row++) {
         if (m.getValueAt(row, 3).equals(username)) {
@@ -507,8 +523,18 @@ jTable3.getColumnModel().getColumn(3).setCellRenderer(new miniChatColumnCellRend
         jLabel7.setText("Help enabled :");
 
         jToggleButton1.setText("enable");
+        jToggleButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jToggleButton1ActionPerformed(evt);
+            }
+        });
 
         jToggleButton2.setText("enable");
+        jToggleButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jToggleButton2ActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
         jPanel6.setLayout(jPanel6Layout);
@@ -703,6 +729,33 @@ jTable3.getColumnModel().getColumn(3).setCellRenderer(new miniChatColumnCellRend
         // TODO add your handling code here:
         sController.openAddExtraTime();
     }//GEN-LAST:event_jButton2ActionPerformed
+
+    private void jToggleButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jToggleButton1ActionPerformed
+        // TODO add your handling code here:
+
+        if (evt.getActionCommand()=="enable") {
+            sController.usbEnabled(true);
+            jToggleButton1.setText("disable");
+            jToggleButton1.setActionCommand("disable");
+        } else {
+            sController.usbEnabled(false);
+            jToggleButton1.setText("enable");
+            jToggleButton1.setActionCommand("enable");
+        }
+    }//GEN-LAST:event_jToggleButton1ActionPerformed
+
+    private void jToggleButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jToggleButton2ActionPerformed
+        // TODO add your handling code here:
+        if (evt.getActionCommand()=="enable") {
+            sController.helpEnabled(true);
+            jToggleButton2.setText("disable");
+            jToggleButton2.setActionCommand("disable");
+        } else {
+            sController.helpEnabled(false);
+            jToggleButton2.setText("enable");
+            jToggleButton2.setActionCommand("enable");
+        }
+    }//GEN-LAST:event_jToggleButton2ActionPerformed
     
     /**
      * @param args the command line arguments
