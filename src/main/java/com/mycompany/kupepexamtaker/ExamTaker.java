@@ -106,7 +106,17 @@ public void informExamExtended(int duration) {
     JOptionPane.showMessageDialog(this,String.format("Exam has been extended %d minutes. ", duration)); 
     
 } 
+public void informHelpComing(HelpComing h) {
+    JOptionPane.showMessageDialog(this,String.format("Please be patient. Help is coming!")); 
+}
 
+public void setPMEnabled(PMEnabled p) {
+    
+    jButton1.setEnabled(p.isEnabled());
+    jTextArea1.setEnabled(p.isEnabled());
+    
+}
+    
 public void informExamStopped() {
     JOptionPane.showMessageDialog(this,String.format("Exam is over!")); 
     jButton3.setEnabled(false);
@@ -417,7 +427,6 @@ public void receiveChatMessageToStudent(ChatMessageToStudent chatMessageToStuden
         jTextArea2.setEditable(false);
         jTextArea2.setColumns(20);
         jTextArea2.setRows(5);
-        jTextArea2.setEnabled(false);
         jScrollPane2.setViewportView(jTextArea2);
 
         jLabel1.setText("-");
@@ -427,11 +436,9 @@ public void receiveChatMessageToStudent(ChatMessageToStudent chatMessageToStuden
         jTextArea1.setColumns(20);
         jTextArea1.setRows(5);
         jTextArea1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
-        jTextArea1.setEnabled(false);
         jScrollPane1.setViewportView(jTextArea1);
 
         jButton1.setText("SEND");
-        jButton1.setEnabled(false);
         jButton1.setFocusable(false);
         jButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {

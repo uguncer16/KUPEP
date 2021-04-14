@@ -90,6 +90,16 @@ public class ObjectEchoClientHandler extends ChannelInboundHandlerAdapter {
             cController.informExamStopped(examStopped);
 
         }
+        else if (msg instanceof HelpComing) {
+            HelpComing helpComing = (HelpComing)msg;
+            cController.informHelpComing(helpComing);
+
+        }
+        else if (msg instanceof PMEnabled) {
+            PMEnabled pMEnabled = (PMEnabled)msg;
+            cController.setPMEnabled(pMEnabled);
+
+        }
 
 
 

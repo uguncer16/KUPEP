@@ -27,6 +27,12 @@ public class ClientController {
     private Timer timer;
     TimerTask task;
 
+    public void setPMEnabled(PMEnabled p) {
+        examTakerGUI.setPMEnabled(p);
+    }
+    public void informHelpComing(HelpComing h) {
+        examTakerGUI.informHelpComing(h);
+    }
     public void helpNeeded(boolean b) {
         HelpNeeded h = new HelpNeeded(System.getProperty("user.name"),b);
         ChannelFuture future = ctx.writeAndFlush(h);
