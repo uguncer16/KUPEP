@@ -100,6 +100,21 @@ class pmEnabledColumnCellRenderer extends DefaultTableCellRenderer {
   }
  }
 
+class OKColumnCellRenderer extends DefaultTableCellRenderer {
+
+  public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int col) {
+
+    //Cells are by default rendered as a JLabel.
+    JLabel l = (JLabel) super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, col);
+    if (l.getText().equals("OK")  ) {
+    l.setBackground(Color.RED);    
+    }  else {
+    l.setBackground(Color.WHITE);        
+    }
+  //Return the JLabel which renders the cell.
+  return l;
+  }
+ }
 
     /**
      * Creates new form ContactEditor
@@ -127,11 +142,13 @@ Action togglePmEnabled = new AbstractAction()
     {
         JTable table = (JTable)e.getSource();
         int modelRow = Integer.valueOf( e.getActionCommand() );
-        
+        String username= (String)((DefaultTableModel)table.getModel()).getValueAt(modelRow,3);        
         String t= (String)((DefaultTableModel)table.getModel()).getValueAt(modelRow,8);
         if (t.equals("ON")) {
+            sController.setPmEnabled(false,username);
             table.setValueAt("OFF", modelRow,8);
         } else {
+            sController.setPmEnabled(true,username);
             table.setValueAt("ON", modelRow,8);
         }
     }
@@ -157,7 +174,37 @@ jTable1.getColumnModel().getColumn(5).setCellRenderer(new connectionColumnCellRe
 jTable1.getColumnModel().getColumn(7).setCellRenderer(new miniChatColumnCellRenderer());
 jTable1.getColumnModel().getColumn(8).setCellRenderer(new pmEnabledColumnCellRenderer());
 
+Action openHelpMiniChat = new AbstractAction()
+{
+    public void actionPerformed(ActionEvent e)
+    {
+        JTable table = (JTable)e.getSource();
+        int modelRow = Integer.valueOf( e.getActionCommand() );
+        
+        String username= (String)((DefaultTableModel)table.getModel()).getValueAt(modelRow,0);
+        ((DefaultTableModel)table.getModel()).setValueAt("Open",modelRow,3);
+        sController.openChat(username);
+    }
+};
 
+Action openHelpOK = new AbstractAction()
+{
+    public void actionPerformed(ActionEvent e)
+    {
+        JTable table = (JTable)e.getSource();
+        int modelRow = Integer.valueOf( e.getActionCommand() );
+        
+        
+        String t= (String)((DefaultTableModel)table.getModel()).getValueAt(modelRow,2);
+        if (t.equals("OK")) {
+            table.setValueAt(" ", modelRow,2);
+        } else {
+            table.setValueAt("OK", modelRow,2);
+        }
+        String username= (String)((DefaultTableModel)table.getModel()).getValueAt(modelRow,0);
+        sController.notifyHelpComing(username);
+    }
+};
 mHelpList = (DefaultTableModel)jTable2.getModel();
 mHelpList.addColumn("Username");
 mHelpList.addColumn("PC No");
@@ -165,11 +212,31 @@ mHelpList.addColumn("Student Help");
 mHelpList.addColumn("Mini Chat");
 mHelpList.addColumn("Time");
 
+ButtonColumn btnHelpMiniChat = new ButtonColumn(jTable2, openHelpMiniChat, 3);
+btnHelpMiniChat.setMnemonic(KeyEvent.VK_D);
+ButtonColumn btnHelpOK = new ButtonColumn(jTable2, openHelpOK, 2);
+btnHelpOK.setMnemonic(KeyEvent.VK_D);
 
-
+jTable2.getColumnModel().getColumn(2).setCellRenderer(new OKColumnCellRenderer());
 jTable2.getColumnModel().getColumn(3).setCellRenderer(new miniChatColumnCellRenderer());
     
 
+Action openDisconnectedOK = new AbstractAction()
+{
+    public void actionPerformed(ActionEvent e)
+    {
+        JTable table = (JTable)e.getSource();
+        int modelRow = Integer.valueOf( e.getActionCommand() );
+        
+        
+        String t= (String)((DefaultTableModel)table.getModel()).getValueAt(modelRow,2);
+        if (t.equals("OK")) {
+            table.setValueAt(" ", modelRow,2);
+        } else {
+            table.setValueAt("OK", modelRow,2);
+        }
+    }
+};
 
 mDisconnectedList = (DefaultTableModel)jTable3.getModel();
 mDisconnectedList.addColumn("Username");
@@ -177,20 +244,45 @@ mDisconnectedList.addColumn("PC No");
 mDisconnectedList.addColumn("Student Help");
 mDisconnectedList.addColumn("Time");
 
-
-jTable3.getColumnModel().getColumn(3).setCellRenderer(new miniChatColumnCellRenderer());
+ButtonColumn btnDisconnectedOK = new ButtonColumn(jTable3, openDisconnectedOK, 2);
+btnDisconnectedOK.setMnemonic(KeyEvent.VK_D);
+jTable3.getColumnModel().getColumn(2).setCellRenderer(new OKColumnCellRenderer());
 
 }
-void clearDisconnectedList() {
-    for(int row = 0;row < mDisconnectedList.getRowCount();row++) {
-        mDisconnectedList.removeRow(row);
-        
-    }
-}     
+ 
 void populateDisconnectedList(Student s, LocalDateTime lastSeen){
-    Object[] mDisconnectedListData1 = 
-    {s.getUsername(), "3", "OK", lastSeen.toLocalTime()  };
-    mDisconnectedList.addRow(mDisconnectedListData1);
+     for(int row = 0;row < m.getRowCount();row++) {
+        if (m.getValueAt(row, 3).equals(s.getUsername())) {
+            m.setValueAt("NO", row, 5);
+        }  
+     }
+     boolean b=false;
+     for(int row = 0;row < mDisconnectedList.getRowCount();row++) {
+        if (mDisconnectedList.getValueAt(row, 0).equals(s.getUsername())) {
+            b=true;
+        }  
+     }
+     if (!b) {
+        Object[] mDisconnectedListData1 = 
+        {s.getUsername(), "3", "OK", lastSeen.toLocalTime()  };
+        mDisconnectedList.addRow(mDisconnectedListData1);     
+     }
+    
+
+}
+
+void clientBackAgain(Student s){
+     for(int row = 0;row < m.getRowCount();row++) {
+        if (m.getValueAt(row, 3).equals(s.getUsername())) {
+            m.setValueAt("YES", row, 5);
+        }  
+     }
+     for(int row = 0;row < mDisconnectedList.getRowCount();row++) {
+        if (mDisconnectedList.getValueAt(row, 0).equals(s.getUsername())) {
+            mDisconnectedList.removeRow(row);
+        }  
+     }
+
 
 }
     

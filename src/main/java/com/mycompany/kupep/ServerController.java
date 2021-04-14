@@ -41,7 +41,17 @@ public class ServerController {
         return examStarted;
     }
 
-
+    public void setPmEnabled(boolean b, String s) {
+        Student student = studentList.get(s);
+        ChannelFuture future = student.getCtx().writeAndFlush(new PMEnabled(b));
+        future.addListener(FIRE_EXCEPTION_ON_FAILURE);
+    }
+    public void notifyHelpComing(String username) {
+        Student student = studentList.get(username);
+        ChannelFuture future = student.getCtx().writeAndFlush(new HelpComing());
+        future.addListener(FIRE_EXCEPTION_ON_FAILURE);
+        
+    }
 
 
 
@@ -107,10 +117,9 @@ public class ServerController {
     public void checkWhoIsOnline(){
         TimerTask task = new TimerTask(){
         public void run(){
-            examinerFormGUI.clearDisconnectedList();
             for (String u:lastSeen.keySet()) {
                 LocalDateTime lastSeenAt = lastSeen.get(u);
-                if (Duration.between(lastSeenAt,LocalDateTime.now()).toSeconds()>=30 && !studentFiles.containsKey(u) ){
+                if (Duration.between(lastSeenAt,LocalDateTime.now()).toSeconds()>=15 && !studentFiles.containsKey(u) ){
                     examinerFormGUI.populateDisconnectedList(studentList.get(u), lastSeenAt);
                 }
             }
@@ -223,6 +232,8 @@ public class ServerController {
                 studentList.put(message.getUsername(), s);
                 messageList.put(message.getUsername(),new ArrayList<ChatMessage>());
                 examinerFormGUI.clientArrived(message);    
+            } else {
+                examinerFormGUI.clientBackAgain(studentList.get(message.getUsername()));    
             }
             
         }
