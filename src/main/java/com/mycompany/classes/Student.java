@@ -12,8 +12,7 @@ public class Student {
     ChannelHandlerContext ctx;
     String username;
     String IP;
-
-
+    boolean PMEnabled;
     String connected;
     
     public Student(ChannelHandlerContext ctx, String username, String IP, String connected) {
@@ -23,6 +22,16 @@ public class Student {
         this.connected = connected;
     }
 
+    public boolean isPMEnabled() {
+        return PMEnabled;
+    }
+
+    public void setPMEnabled(boolean PMEnabled) {
+        this.PMEnabled = PMEnabled;
+    }
+
+    
+    
     public ChannelHandlerContext getCtx() {
         return ctx;
     }

@@ -43,6 +43,7 @@ public class ServerController {
 
     public void setPmEnabled(boolean b, String s) {
         Student student = studentList.get(s);
+        student.setPMEnabled(b);
         ChannelFuture future = student.getCtx().writeAndFlush(new PMEnabled(b));
         future.addListener(FIRE_EXCEPTION_ON_FAILURE);
     }
