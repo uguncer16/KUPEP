@@ -26,6 +26,7 @@ public class ClientController {
     String submitFile;
     private Timer timer;
     TimerTask task;
+    boolean openDiaolog ;
 
     public void setPMEnabled(PMEnabled p) {
         examTakerGUI.setPMEnabled(p);
@@ -88,7 +89,16 @@ public class ClientController {
     public ClientController(){
         examTakerGUI = new ExamTaker(this);
         this.timer = new Timer();
+        openDiaolog = true;
 
+    }
+
+    public boolean isOpenDiaolog() {
+        return openDiaolog;
+    }
+
+    public void setOpenDiaolog(boolean openDiaolog) {
+        this.openDiaolog = openDiaolog;
     }
     
 
@@ -121,6 +131,12 @@ public class ClientController {
         examTakerGUI.receiveChatMessageToStudent(chatMessageToStudent);
         
     }
+    
+    public void receiveChatMessagePublic(ChatMessagePublic chatMessagePublic){
+        examTakerGUI.receiveChatMessagePublic(chatMessagePublic);
+        
+    }
+    
     public void go() throws Exception{
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {

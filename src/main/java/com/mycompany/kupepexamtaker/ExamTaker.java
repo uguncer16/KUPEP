@@ -99,14 +99,17 @@ public void setTimeRemaining(String t) {
 }
 
 public void informExamStarted(int duration) {
+    if (cController.isOpenDiaolog())
     JOptionPane.showMessageDialog(this,String.format("Exam has started. You have %d minutes. Goodluck!", duration)); 
     jButton3.setEnabled(true);
 } 
 public void informExamExtended(int duration) {
+    if (cController.isOpenDiaolog())
     JOptionPane.showMessageDialog(this,String.format("Exam has been extended %d minutes. ", duration)); 
     
 } 
 public void informHelpComing(HelpComing h) {
+    if (cController.isOpenDiaolog())
     JOptionPane.showMessageDialog(this,String.format("Please be patient. Help is coming!")); 
 }
 
@@ -129,6 +132,13 @@ public void receiveChatMessageToStudent(ChatMessageToStudent chatMessageToStuden
     jTextArea2.setText(textSoFar );
     
 }
+public void receiveChatMessagePublic(ChatMessagePublic chatMessagePublic) {
+    String textSoFar = jTextArea3.getText();
+    textSoFar += ">" + chatMessagePublic.getTime() + ":" + chatMessagePublic.getMessage() +"\n";
+    jTextArea3.setText(textSoFar );
+    
+}
+
     /**
      * Creates new form ContactEditor
      */
@@ -418,10 +428,10 @@ public void receiveChatMessageToStudent(ChatMessageToStudent chatMessageToStuden
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
+        jTextArea3.setEditable(false);
         jTextArea3.setColumns(20);
         jTextArea3.setRows(5);
         jTextArea3.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
-        jTextArea3.setEnabled(false);
         jScrollPane3.setViewportView(jTextArea3);
 
         jTextArea2.setEditable(false);
@@ -610,6 +620,7 @@ public void receiveChatMessageToStudent(ChatMessageToStudent chatMessageToStuden
 
     public void setExamInformation(boolean i) {
             jButton2.setEnabled(i);
+            if (cController.isOpenDiaolog())
             JOptionPane.showMessageDialog(this,String.format("Exam information has been received!")); 
     }
     public void updateExamSettings(ExamSetting examSetting) {

@@ -55,7 +55,7 @@ public class ObjectEchoClientHandler extends ChannelInboundHandlerAdapter {
         // Send the first message if this handler is a client-side handler.
         cController.setCtx(ctx);
         InetAddress inetAddress = InetAddress. getLocalHost();
-        ClientArrived firstMessage = new ClientArrived(inetAddress. getHostAddress(),System.getProperty("user.name"));
+        ClientArrived firstMessage = new ClientArrived(inetAddress. getHostAddress(),System.getProperty("user.name"),"10",System.getProperty("os.name"));
         ChannelFuture future = ctx.writeAndFlush(firstMessage);
         future.addListener(FIRE_EXCEPTION_ON_FAILURE); // Let object serialisation exceptions propagate.
     }
@@ -65,7 +65,12 @@ public class ObjectEchoClientHandler extends ChannelInboundHandlerAdapter {
         if (msg instanceof ChatMessageToStudent) {
             ChatMessageToStudent chatMessageToStudent = (ChatMessageToStudent)msg;
             cController.receiveChatMessageToStudent(chatMessageToStudent);
-        } else if (msg instanceof TimeRemaining) {
+        } 
+        else if (msg instanceof ChatMessagePublic) {
+            ChatMessagePublic chatMessagePublic = (ChatMessagePublic)msg;
+            cController.receiveChatMessagePublic(chatMessagePublic);
+        } 
+        else if (msg instanceof TimeRemaining) {
             TimeRemaining timeRemaining = (TimeRemaining)msg;
             cController.setTimeRemaining(timeRemaining.getTimeRemaing());
         } else if (msg instanceof ExamSetting) {
@@ -98,6 +103,11 @@ public class ObjectEchoClientHandler extends ChannelInboundHandlerAdapter {
         else if (msg instanceof PMEnabled) {
             PMEnabled pMEnabled = (PMEnabled)msg;
             cController.setPMEnabled(pMEnabled);
+
+        }
+        else if (msg instanceof OpenDialog) {
+            OpenDialog openDialog = (OpenDialog)msg;
+            cController.setOpenDiaolog(openDialog.isOn());
 
         }
 
