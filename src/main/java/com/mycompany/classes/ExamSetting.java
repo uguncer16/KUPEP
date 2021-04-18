@@ -23,6 +23,7 @@ public class ExamSetting implements Serializable{
     private String permittedFileExtensions;
 
     public ExamSetting() {
+        examFile =null;
     }
 
     public void setCourseCode(String courseCode) {

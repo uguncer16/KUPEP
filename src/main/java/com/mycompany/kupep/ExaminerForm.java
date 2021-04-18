@@ -317,9 +317,9 @@ void clientBackAgain(Student s){
         
     } 
     
-    void clientArrived(ClientArrived msg) {
+    void clientArrived(Student s) {
         Object[] data = 
-            {"1", "Windows", msg.getIP(),msg.getUsername(),  "", "YES", "Not-Submitted", "Open", "ON"  };
+            {s.getCompNo(), s.getOS(), s.getIP(),s.getUsername(),  "", "YES", s.getSubmitted(), "Open", s.getPMEnabled() };
         
         m.addRow(data);
         
@@ -695,6 +695,11 @@ void clientBackAgain(Student s){
         });
 
         jButton3.setText("Send Public Message");
+        jButton3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton3ActionPerformed(evt);
+            }
+        });
 
         jButton4.setText("Send Exam to Students");
         jButton4.setEnabled(false);
@@ -848,6 +853,11 @@ void clientBackAgain(Student s){
             jToggleButton2.setActionCommand("enable");
         }
     }//GEN-LAST:event_jToggleButton2ActionPerformed
+
+    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+        // TODO add your handling code here:
+        sController.openPublicMessageBox();
+    }//GEN-LAST:event_jButton3ActionPerformed
     
     /**
      * @param args the command line arguments

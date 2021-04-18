@@ -25,18 +25,39 @@ public class ServerController {
     private ExaminerForm examinerFormGUI;
     private HashMap<String,Student> studentList;
     private HashMap<String,ArrayList<ChatMessage>> messageList;
+    private ArrayList<ChatMessagePublic> publicmessageList;
     private HashMap<String,Boolean> helpList;
     private HashMap<String,FileMessage> studentFiles;
     private MiniChat miniChat;
+    private PublicMessageBox publicMessageBox;
     private ExamSettings examSettingsForm;
     private ExamSetting examSetting;
     private int timeRemaining;
     private Timer timer;
     private Timer timer2;
     private boolean examStarted;
+    private boolean examStopped;
     private AddExtraTime addExtraTimeForm;
     private HashMap<String,LocalDateTime> lastSeen;
 
+    public PublicMessageBox getPublicMessageBox() {
+        return publicMessageBox;
+    }
+
+    public void setPublicMessageBox(PublicMessageBox publicMessageBox) {
+        this.publicMessageBox = publicMessageBox;
+    }
+
+    
+    
+    public  ArrayList<ChatMessagePublic> getPublicmessageList() {
+        return publicmessageList;
+    }
+
+
+
+    
+    
     public boolean isExamStarted() {
         return examStarted;
     }
@@ -100,10 +121,12 @@ public class ServerController {
         examinerFormGUI = new ExaminerForm(this);
         studentList = new HashMap<String,Student>();
         messageList = new HashMap<String,ArrayList<ChatMessage>>();
+        publicmessageList = new ArrayList<ChatMessagePublic>() ;
         studentFiles = new HashMap<String,FileMessage> ();
         helpList = new HashMap<String,Boolean>();
         lastSeen = new HashMap<String,LocalDateTime> ();
         this.miniChat = null;
+        this.publicMessageBox = null;
         this.examSettingsForm = null;
         this.timer = new Timer();
         this.timer2 = new Timer();
@@ -141,6 +164,7 @@ public class ServerController {
                 TimeRemaining tr = new TimeRemaining(getTimeRemaining());
                 sendMessageToAllStudents(tr);
                 if (timeRemaining==0) {
+                    examStopped = true;
                     ExamStopped examStopped = new ExamStopped();
                     sendMessageToAllStudents(examStopped);
                     cancel();
@@ -202,6 +226,15 @@ public class ServerController {
                 
             }
     }
+    public void openPublicMessageBox(){
+
+                if (this.publicMessageBox==null) {
+                    PublicMessageBox publicMessageBox = new PublicMessageBox(this);    
+                    this.publicMessageBox =  publicMessageBox;
+                }
+                
+
+    }
     
     public ArrayList<ChatMessage> getMessages(String username) {
         return messageList.get(username);
@@ -225,17 +258,61 @@ public class ServerController {
         messageList.get(student.getUsername()).add(chatMessage);
         
     }
+    
+    public void sendPublicMessage(ChatMessagePublic publicMessage) {
+        
+        sendMessageToAllStudents(publicMessage);
+        publicmessageList.add(publicMessage);
+        
+    }
+    public void sendUpdates(String username){
+        Student s = studentList.get(username);
+        ChannelFuture future;
+        future = s.getCtx().writeAndFlush(new  OpenDialog(false));
+        future = s.getCtx().writeAndFlush(examSetting);
+        if (this.examSetting.getExamFile()!=null)
+            future = s.getCtx().writeAndFlush(new FileMessage(new File(this.examSetting.getExamFile())));
+        future = s.getCtx().writeAndFlush(new PMEnabled(s.isPMEnabled()));
+        if (this.examStarted==true && this.examStopped==false)
+            future = s.getCtx().writeAndFlush(new ExamStarted(this.examSetting.getExamDuration()));
+        else if (this.examStopped==true)
+            future = s.getCtx().writeAndFlush(new ExamStopped());
+        
+        for (ChatMessage c:messageList.get(username)) {
+            ChatMessageToStudent cs = new ChatMessageToStudent(c.getMessage());
+            future = s.getCtx().writeAndFlush(cs);
+        }
+        for (ChatMessagePublic c:publicmessageList) {
+            ChatMessagePublic cs = new ChatMessagePublic(c.getMessage());
+            future = s.getCtx().writeAndFlush(cs);
+        }
+        future = s.getCtx().writeAndFlush(new  OpenDialog(true));
+        future.addListener(FIRE_EXCEPTION_ON_FAILURE);
+        
+    }
+    
     public void recieveMessage(ChannelHandlerContext ctx,Object msg) {
         if (msg instanceof ClientArrived) {
             ClientArrived message = (ClientArrived)msg;
+            Student s;
             if (!studentList.containsKey(message.getUsername())) {
-                Student s = new Student(ctx,message.getUsername() ,message.getIP(), "YES");
+                s = new Student(ctx,message.getUsername() ,message.getIP(), "YES");
+                s.setCompNo(message.getCompNo());
+                s.setOS(message.getOS());
                 studentList.put(message.getUsername(), s);
                 messageList.put(message.getUsername(),new ArrayList<ChatMessage>());
-                examinerFormGUI.clientArrived(message);    
+                examinerFormGUI.clientArrived(studentList.get(message.getUsername()));    
             } else {
+                s = studentList.get(message.getUsername());
+                s.setCompNo(message.getCompNo());
+                s.setOS(message.getOS());
+                s.setCtx(ctx);
+                s.setIP(message.getIP());
                 examinerFormGUI.clientBackAgain(studentList.get(message.getUsername()));    
             }
+            
+            updateLastSeen(message.getUsername());
+            sendUpdates(message.getUsername());
             
         }
         if (msg instanceof ChatMessageFromStudent) {
@@ -253,6 +330,7 @@ public class ServerController {
                 
                 FileUtils.writeByteArrayToFile(new File(".\\submittedFiles/"+fm.getUsername()+"/"+fm.getFile().getName()), fm.getBytes());
                 this.studentFiles.put(fm.getUsername(),fm );
+                studentList.get(fm.getUsername()).setSubmitted(true);
                 
                 
             } catch (IOException ex) {

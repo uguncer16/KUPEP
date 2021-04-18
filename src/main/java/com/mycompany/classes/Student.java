@@ -12,7 +12,10 @@ public class Student {
     ChannelHandlerContext ctx;
     String username;
     String IP;
+    String CompNo;
+    String OS;
     boolean PMEnabled;
+    boolean submitted;
     String connected;
     
     public Student(ChannelHandlerContext ctx, String username, String IP, String connected) {
@@ -22,8 +25,49 @@ public class Student {
         this.connected = connected;
     }
 
+    public String getOS() {
+        return OS;
+    }
+
+    public void setOS(String OS) {
+        this.OS = OS;
+    }
+
+    public boolean isSubmitted() {
+        return submitted;
+    }
+
+    public void setSubmitted(boolean submitted) {
+        this.submitted = submitted;
+    }
+
+    public String getCompNo() {
+        return CompNo;
+    }
+
+    public void setCompNo(String CompNo) {
+        this.CompNo = CompNo;
+    }
+    
+    
+
     public boolean isPMEnabled() {
         return PMEnabled;
+    }
+    
+    public String getSubmitted() {
+        if (submitted)
+            return "Submitted";
+                    else
+            return "Not-Submitted";
+    }
+
+    
+    public String getPMEnabled() {
+        if (PMEnabled)
+            return "ON";
+                    else
+            return "OFF";
     }
 
     public void setPMEnabled(boolean PMEnabled) {
