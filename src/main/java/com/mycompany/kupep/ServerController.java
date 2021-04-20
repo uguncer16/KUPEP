@@ -39,7 +39,12 @@ public class ServerController {
     private boolean examStopped;
     private AddExtraTime addExtraTimeForm;
     private HashMap<String,LocalDateTime> lastSeen;
+    ChannelHandlerContext proxyCtx;
 
+    public void setProxyCtx(ChannelHandlerContext ctx) {
+        this.proxyCtx = ctx;
+    }
+            
     public PublicMessageBox getPublicMessageBox() {
         return publicMessageBox;
     }
@@ -182,7 +187,18 @@ public class ServerController {
     
     public void sendExamSetting(){
 
-    
+        String sites = examSetting.getBannedSites();
+        String site[] = sites.split(" ");
+        ArrayList<String> b= new ArrayList<String>();
+        for (String c: site) {
+            b.add(c);
+        }
+        
+        BannedSites bannedSites = new BannedSites(b);
+        
+        ChannelFuture future = proxyCtx.writeAndFlush(bannedSites);    
+        future.addListener(FIRE_EXCEPTION_ON_FAILURE);
+        
         sendMessageToAllStudents(this.examSetting);
     }
     
@@ -358,12 +374,20 @@ public class ServerController {
         
     }
     public void go() throws Exception{
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                examinerFormGUI.setVisible(true);
-            }
-        });
-        ObjectEchoServer.go(this);
+        
+        examinerFormGUI.setVisible(true);
+
+        ClientThread c = new ClientThread(this);        
+        ServerThread s = new ServerThread(this);                          
+
+        
+        s.run();
+        c.run();
+
+                    
+                    
+        
+        
     }
     public static void main(String args[]) throws Exception {
         ServerController sController = new ServerController();
