@@ -188,16 +188,23 @@ public class ServerController {
     public void sendExamSetting(){
 
         String sites = examSetting.getBannedSites();
-        String site[] = sites.split(" ");
         ArrayList<String> b= new ArrayList<String>();
-        for (String c: site) {
-            b.add(c);
+        if (sites!=null) {
+            if (sites.length()>0) {
+                String site[] = sites.split(" ");
+                
+                for (String c: site) {
+                    b.add(c);
+                }
+
+            } 
         }
-        
         BannedSites bannedSites = new BannedSites(b);
-        
+
         ChannelFuture future = proxyCtx.writeAndFlush(bannedSites);    
-        future.addListener(FIRE_EXCEPTION_ON_FAILURE);
+        future = proxyCtx.writeAndFlush(this.examSetting);    
+        future.addListener(FIRE_EXCEPTION_ON_FAILURE);                            
+
         
         sendMessageToAllStudents(this.examSetting);
     }
@@ -381,8 +388,8 @@ public class ServerController {
         ServerThread s = new ServerThread(this);                          
 
         
-        s.run();
-        c.run();
+        s.start();
+        c.start();
 
                     
                     
