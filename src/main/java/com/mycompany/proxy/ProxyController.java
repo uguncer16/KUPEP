@@ -14,10 +14,13 @@ import java.util.logging.Logger;
 public class ProxyController {
     ChannelHandlerContext examiner;
     ArrayList<String> bannedSites;
+    boolean internetEnabled=true;
     
     public void recieveMessage(ChannelHandlerContext ctx, Object msg){
         if (msg instanceof BannedSites) {
             this.bannedSites = ((BannedSites)msg).getSites();
+        } else if (msg instanceof ExamSetting) {
+            this.internetEnabled = ((ExamSetting)msg).isInternetEnabled();
         }
     }
     
@@ -48,8 +51,8 @@ public class ProxyController {
        ProxyServerThread t1 = new ProxyServerThread(this);
        Server2Thread t2 = new Server2Thread(this);
        
-       t1.run();
-       t2.run();
+       t1.start();
+       t2.start();
        
         
     }

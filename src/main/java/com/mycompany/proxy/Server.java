@@ -55,71 +55,85 @@ public class Server extends Thread {
             try {
                 String request = readLine(clientSocket);
                 System.out.println(request);
+                System.out.println(pController.internetEnabled);
                 System.out.println(pController.getBannedSites());
-                Matcher matcher = CONNECT_PATTERN.matcher(request);
-                if (matcher.matches()) {
-                    String header;
-                    do {
-                        header = readLine(clientSocket);
-                    } while (!"".equals(header));
-                    OutputStreamWriter outputStreamWriter = new OutputStreamWriter(clientSocket.getOutputStream(),
-                                                                                   "ISO-8859-1");
-
-                    final Socket forwardSocket;
-                    try {
-                        forwardSocket = new Socket(matcher.group(1), Integer.parseInt(matcher.group(2)));
-                        System.out.println(forwardSocket);
-                    } catch (IOException | NumberFormatException e) {
-                        e.printStackTrace();  // TODO: implement catch
-                        outputStreamWriter.write("HTTP/" + matcher.group(3) + " 502 Bad Gateway\r\n");
-                        outputStreamWriter.write("Proxy-agent: Simple/0.1\r\n");
-                        outputStreamWriter.write("\r\n");
-                        outputStreamWriter.flush();
-                        return;
-                    }
-                    try {
-                        outputStreamWriter.write("HTTP/" + matcher.group(3) + " 200 Connection established\r\n");
-                        outputStreamWriter.write("Proxy-agent: Simple/0.1\r\n");
-                        outputStreamWriter.write("\r\n");
-                        outputStreamWriter.flush();
-
-                        Thread remoteToClient = new Thread() {
-                            @Override
-                            public void run() {
-                                forwardData(forwardSocket, clientSocket);
-                            }
-                        };
-                        remoteToClient.start();
-                        try {
-                            if (previousWasR) {
-                                int read = clientSocket.getInputStream().read();
-                                if (read != -1) {
-                                    if (read != '\n') {
-                                        forwardSocket.getOutputStream().write(read);
-                                    }
-                                    forwardData(clientSocket, forwardSocket);
-                                } else {
-                                    if (!forwardSocket.isOutputShutdown()) {
-                                        forwardSocket.shutdownOutput();
-                                    }
-                                    if (!clientSocket.isInputShutdown()) {
-                                        clientSocket.shutdownInput();
-                                    }
-                                }
-                            } else {
-                                forwardData(clientSocket, forwardSocket);
-                            }
-                        } finally {
-                            try {
-                                remoteToClient.join();
-                            } catch (InterruptedException e) {
-                                e.printStackTrace();  // TODO: implement catch
-                            }
-                        }
-                    } finally {
-                        forwardSocket.close();
+                boolean isAllowed=pController.internetEnabled;
+                for (String site:pController.getBannedSites()){
+                    if (request.indexOf(site)>-1) {
+                        isAllowed=true;
+                        System.out.println("Banned Request");
                     }
                 }
+                
+                
+                if (isAllowed) {
+                    System.out.println("Not Banned Request");
+                    Matcher matcher = CONNECT_PATTERN.matcher(request);
+                    if (matcher.matches()) {
+                        String header;
+                        do {
+                            header = readLine(clientSocket);
+                        } while (!"".equals(header));
+                        OutputStreamWriter outputStreamWriter = new OutputStreamWriter(clientSocket.getOutputStream(),
+                                                                                       "ISO-8859-1");
+
+                        final Socket forwardSocket;
+                        try {
+                            forwardSocket = new Socket(matcher.group(1), Integer.parseInt(matcher.group(2)));
+                            System.out.println(forwardSocket);
+                        } catch (IOException | NumberFormatException e) {
+                            e.printStackTrace();  // TODO: implement catch
+                            outputStreamWriter.write("HTTP/" + matcher.group(3) + " 502 Bad Gateway\r\n");
+                            outputStreamWriter.write("Proxy-agent: Simple/0.1\r\n");
+                            outputStreamWriter.write("\r\n");
+                            outputStreamWriter.flush();
+                            return;
+                        }
+                        try {
+                            outputStreamWriter.write("HTTP/" + matcher.group(3) + " 200 Connection established\r\n");
+                            outputStreamWriter.write("Proxy-agent: Simple/0.1\r\n");
+                            outputStreamWriter.write("\r\n");
+                            outputStreamWriter.flush();
+
+                            Thread remoteToClient = new Thread() {
+                                @Override
+                                public void run() {
+                                    forwardData(forwardSocket, clientSocket);
+                                }
+                            };
+                            remoteToClient.start();
+                            try {
+                                if (previousWasR) {
+                                    int read = clientSocket.getInputStream().read();
+                                    if (read != -1) {
+                                        if (read != '\n') {
+                                            forwardSocket.getOutputStream().write(read);
+                                        }
+                                        forwardData(clientSocket, forwardSocket);
+                                    } else {
+                                        if (!forwardSocket.isOutputShutdown()) {
+                                            forwardSocket.shutdownOutput();
+                                        }
+                                        if (!clientSocket.isInputShutdown()) {
+                                            clientSocket.shutdownInput();
+                                        }
+                                    }
+                                } else {
+                                    forwardData(clientSocket, forwardSocket);
+                                }
+                            } finally {
+                                try {
+                                    remoteToClient.join();
+                                } catch (InterruptedException e) {
+                                    e.printStackTrace();  // TODO: implement catch
+                                }
+                            }
+                        } finally {
+                            forwardSocket.close();
+                        }
+                    }
+                }
+                
             } catch (IOException e) {
                 e.printStackTrace();  // TODO: implement catch
             } finally {
