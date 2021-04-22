@@ -130,8 +130,8 @@ Action openMiniChat = new AbstractAction()
         JTable table = (JTable)e.getSource();
         int modelRow = Integer.valueOf( e.getActionCommand() );
         
-        String username= (String)((DefaultTableModel)table.getModel()).getValueAt(modelRow,3);
-        ((DefaultTableModel)table.getModel()).setValueAt("Open",modelRow,7);
+        String username= (String)((DefaultTableModel)table.getModel()).getValueAt(modelRow,2);
+        ((DefaultTableModel)table.getModel()).setValueAt("Open",modelRow,5);
         sController.openChat(username);
         //MiniChat.main(null);
     }
@@ -142,37 +142,35 @@ Action togglePmEnabled = new AbstractAction()
     {
         JTable table = (JTable)e.getSource();
         int modelRow = Integer.valueOf( e.getActionCommand() );
-        String username= (String)((DefaultTableModel)table.getModel()).getValueAt(modelRow,3);        
-        String t= (String)((DefaultTableModel)table.getModel()).getValueAt(modelRow,8);
+        String username= (String)((DefaultTableModel)table.getModel()).getValueAt(modelRow,2);        
+        String t= (String)((DefaultTableModel)table.getModel()).getValueAt(modelRow,6);
         if (t.equals("ON")) {
             sController.setPmEnabled(false,username);
-            table.setValueAt("OFF", modelRow,8);
+            table.setValueAt("OFF", modelRow,6);
         } else {
             sController.setPmEnabled(true,username);
-            table.setValueAt("ON", modelRow,8);
+            table.setValueAt("ON", modelRow,6);
         }
     }
 };
 m = (DefaultTableModel)jTable1.getModel();
-m.addColumn("PC No:");
 m.addColumn("Mac/Windows");
 m.addColumn("IP");
 m.addColumn("User Name");
-m.addColumn("ID");
 m.addColumn("Connection");
 m.addColumn("Sumission Status");
 m.addColumn("Mini Chat");
 m.addColumn("PM Enabled");
 
 
-ButtonColumn btnMiniChat = new ButtonColumn(jTable1, openMiniChat, 7);
-ButtonColumn btnPmEnabled = new ButtonColumn(jTable1, togglePmEnabled, 8);
+ButtonColumn btnMiniChat = new ButtonColumn(jTable1, openMiniChat, 5);
+ButtonColumn btnPmEnabled = new ButtonColumn(jTable1, togglePmEnabled, 6);
 btnMiniChat.setMnemonic(KeyEvent.VK_D);
 btnPmEnabled.setMnemonic(KeyEvent.VK_D);
 
-jTable1.getColumnModel().getColumn(5).setCellRenderer(new connectionColumnCellRenderer());
-jTable1.getColumnModel().getColumn(7).setCellRenderer(new miniChatColumnCellRenderer());
-jTable1.getColumnModel().getColumn(8).setCellRenderer(new pmEnabledColumnCellRenderer());
+jTable1.getColumnModel().getColumn(3).setCellRenderer(new connectionColumnCellRenderer());
+jTable1.getColumnModel().getColumn(5).setCellRenderer(new miniChatColumnCellRenderer());
+jTable1.getColumnModel().getColumn(6).setCellRenderer(new pmEnabledColumnCellRenderer());
 
 Action openHelpMiniChat = new AbstractAction()
 {
@@ -182,7 +180,7 @@ Action openHelpMiniChat = new AbstractAction()
         int modelRow = Integer.valueOf( e.getActionCommand() );
         
         String username= (String)((DefaultTableModel)table.getModel()).getValueAt(modelRow,0);
-        ((DefaultTableModel)table.getModel()).setValueAt("Open",modelRow,3);
+        ((DefaultTableModel)table.getModel()).setValueAt("Open",modelRow,2);
         sController.openChat(username);
     }
 };
@@ -195,11 +193,11 @@ Action openHelpOK = new AbstractAction()
         int modelRow = Integer.valueOf( e.getActionCommand() );
         
         
-        String t= (String)((DefaultTableModel)table.getModel()).getValueAt(modelRow,2);
+        String t= (String)((DefaultTableModel)table.getModel()).getValueAt(modelRow,1);
         if (t.equals("OK")) {
-            table.setValueAt(" ", modelRow,2);
+            table.setValueAt(" ", modelRow,1);
         } else {
-            table.setValueAt("OK", modelRow,2);
+            table.setValueAt("OK", modelRow,1);
         }
         String username= (String)((DefaultTableModel)table.getModel()).getValueAt(modelRow,0);
         sController.notifyHelpComing(username);
@@ -207,18 +205,17 @@ Action openHelpOK = new AbstractAction()
 };
 mHelpList = (DefaultTableModel)jTable2.getModel();
 mHelpList.addColumn("Username");
-mHelpList.addColumn("PC No");
 mHelpList.addColumn("Student Help");
 mHelpList.addColumn("Mini Chat");
 mHelpList.addColumn("Time");
 
-ButtonColumn btnHelpMiniChat = new ButtonColumn(jTable2, openHelpMiniChat, 3);
+ButtonColumn btnHelpMiniChat = new ButtonColumn(jTable2, openHelpMiniChat, 2);
 btnHelpMiniChat.setMnemonic(KeyEvent.VK_D);
-ButtonColumn btnHelpOK = new ButtonColumn(jTable2, openHelpOK, 2);
+ButtonColumn btnHelpOK = new ButtonColumn(jTable2, openHelpOK, 1);
 btnHelpOK.setMnemonic(KeyEvent.VK_D);
 
-jTable2.getColumnModel().getColumn(2).setCellRenderer(new OKColumnCellRenderer());
-jTable2.getColumnModel().getColumn(3).setCellRenderer(new miniChatColumnCellRenderer());
+jTable2.getColumnModel().getColumn(1).setCellRenderer(new OKColumnCellRenderer());
+jTable2.getColumnModel().getColumn(2).setCellRenderer(new miniChatColumnCellRenderer());
     
 
 Action openDisconnectedOK = new AbstractAction()
@@ -229,31 +226,30 @@ Action openDisconnectedOK = new AbstractAction()
         int modelRow = Integer.valueOf( e.getActionCommand() );
         
         
-        String t= (String)((DefaultTableModel)table.getModel()).getValueAt(modelRow,2);
+        String t= (String)((DefaultTableModel)table.getModel()).getValueAt(modelRow,1);
         if (t.equals("OK")) {
-            table.setValueAt(" ", modelRow,2);
+            table.setValueAt(" ", modelRow,1);
         } else {
-            table.setValueAt("OK", modelRow,2);
+            table.setValueAt("OK", modelRow,1);
         }
     }
 };
 
 mDisconnectedList = (DefaultTableModel)jTable3.getModel();
 mDisconnectedList.addColumn("Username");
-mDisconnectedList.addColumn("PC No");
 mDisconnectedList.addColumn("Student Help");
 mDisconnectedList.addColumn("Time");
 
-ButtonColumn btnDisconnectedOK = new ButtonColumn(jTable3, openDisconnectedOK, 2);
+ButtonColumn btnDisconnectedOK = new ButtonColumn(jTable3, openDisconnectedOK, 1);
 btnDisconnectedOK.setMnemonic(KeyEvent.VK_D);
-jTable3.getColumnModel().getColumn(2).setCellRenderer(new OKColumnCellRenderer());
+jTable3.getColumnModel().getColumn(1).setCellRenderer(new OKColumnCellRenderer());
 
 }
  
 void populateDisconnectedList(Student s, LocalDateTime lastSeen){
      for(int row = 0;row < m.getRowCount();row++) {
-        if (m.getValueAt(row, 3).equals(s.getUsername())) {
-            m.setValueAt("NO", row, 5);
+        if (m.getValueAt(row, 2).equals(s.getUsername())) {
+            m.setValueAt("NO", row, 3);
         }  
      }
      boolean b=false;
@@ -264,7 +260,7 @@ void populateDisconnectedList(Student s, LocalDateTime lastSeen){
      }
      if (!b) {
         Object[] mDisconnectedListData1 = 
-        {s.getUsername(), "3", "OK", lastSeen.toLocalTime()  };
+        {s.getUsername(), "OK", lastSeen.toLocalTime()  };
         mDisconnectedList.addRow(mDisconnectedListData1);     
      }
     
@@ -273,8 +269,8 @@ void populateDisconnectedList(Student s, LocalDateTime lastSeen){
 
 void clientBackAgain(Student s){
      for(int row = 0;row < m.getRowCount();row++) {
-        if (m.getValueAt(row, 3).equals(s.getUsername())) {
-            m.setValueAt("YES", row, 5);
+        if (m.getValueAt(row, 2).equals(s.getUsername())) {
+            m.setValueAt("YES", row, 3);
         }  
      }
      for(int row = 0;row < mDisconnectedList.getRowCount();row++) {
@@ -289,7 +285,7 @@ void clientBackAgain(Student s){
     void clientNeedsHelp(Student s){
         
         Object[] mHelpListData1 = 
-                {s.getUsername(), "11", "OK","Open", LocalTime.now() };        
+                {s.getUsername(),  "OK","Open", LocalTime.now() };        
         
 
         mHelpList.addRow(mHelpListData1);           
@@ -309,8 +305,8 @@ void clientBackAgain(Student s){
 
     void clientSubmitted(String username) {
         for(int row = 0;row < m.getRowCount();row++) {
-        if (m.getValueAt(row, 3).equals(username)) {
-            m.setValueAt("Submitted",row, 6);
+        if (m.getValueAt(row, 2).equals(username)) {
+            m.setValueAt("Submitted",row, 4);
         }    
 
         }
@@ -319,7 +315,7 @@ void clientBackAgain(Student s){
     
     void clientArrived(Student s) {
         Object[] data = 
-            {s.getCompNo(), s.getOS(), s.getIP(),s.getUsername(),  "", "YES", s.getSubmitted(), "Open", s.getPMEnabled() };
+            { s.getOS(), s.getIP(),s.getUsername(),   "YES", s.getSubmitted(), "Open", s.getPMEnabled() };
         
         m.addRow(data);
         
@@ -372,8 +368,8 @@ void clientBackAgain(Student s){
     void setNewMessage(ChatMessageFromStudent chatMessagFromStudent){
         String username = chatMessagFromStudent.getUsername();
         for(int row = 0;row < m.getRowCount();row++) {
-        if (m.getValueAt(row, 3).equals(username)) {
-            m.setValueAt("New",row, 7);
+        if (m.getValueAt(row, 2).equals(username)) {
+            m.setValueAt("New",row, 5);
         }    
 
         }
@@ -415,9 +411,7 @@ void clientBackAgain(Student s){
         jScrollPane1 = new javax.swing.JScrollPane();
         jTable2 = new javax.swing.JTable();
         jPanel6 = new javax.swing.JPanel();
-        jLabel6 = new javax.swing.JLabel();
         jLabel7 = new javax.swing.JLabel();
-        jToggleButton1 = new javax.swing.JToggleButton();
         jToggleButton2 = new javax.swing.JToggleButton();
         jPanel4 = new javax.swing.JPanel();
         jScrollPane3 = new javax.swing.JScrollPane();
@@ -431,7 +425,7 @@ void clientBackAgain(Student s){
         jButton6 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setTitle("KUPUP Examiner");
+        setTitle("KUPEP Examiner");
 
         jPanel1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
 
@@ -610,16 +604,7 @@ void clientBackAgain(Student s){
 
         jPanel6.setBorder(javax.swing.BorderFactory.createTitledBorder("Quick Settings"));
 
-        jLabel6.setText("USB enabled :");
-
         jLabel7.setText("Help enabled :");
-
-        jToggleButton1.setText("enable");
-        jToggleButton1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jToggleButton1ActionPerformed(evt);
-            }
-        });
 
         jToggleButton2.setText("enable");
         jToggleButton2.addActionListener(new java.awt.event.ActionListener() {
@@ -634,22 +619,15 @@ void clientBackAgain(Student s){
             jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel6Layout.createSequentialGroup()
                 .addGap(97, 97, 97)
-                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jLabel6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jLabel7, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(jLabel7)
                 .addGap(18, 18, 18)
-                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jToggleButton1)
-                    .addComponent(jToggleButton2))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(jToggleButton2)
+                .addContainerGap(94, Short.MAX_VALUE))
         );
         jPanel6Layout.setVerticalGroup(
             jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel6Layout.createSequentialGroup()
-                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel6)
-                    .addComponent(jToggleButton1))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 13, Short.MAX_VALUE)
+                .addContainerGap(34, Short.MAX_VALUE)
                 .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel7)
                     .addComponent(jToggleButton2))
@@ -827,20 +805,6 @@ void clientBackAgain(Student s){
         sController.openAddExtraTime();
     }//GEN-LAST:event_jButton2ActionPerformed
 
-    private void jToggleButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jToggleButton1ActionPerformed
-        // TODO add your handling code here:
-
-        if (evt.getActionCommand()=="enable") {
-            sController.usbEnabled(true);
-            jToggleButton1.setText("disable");
-            jToggleButton1.setActionCommand("disable");
-        } else {
-            sController.usbEnabled(false);
-            jToggleButton1.setText("enable");
-            jToggleButton1.setActionCommand("enable");
-        }
-    }//GEN-LAST:event_jToggleButton1ActionPerformed
-
     private void jToggleButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jToggleButton2ActionPerformed
         // TODO add your handling code here:
         if (evt.getActionCommand()=="enable") {
@@ -921,7 +885,6 @@ void clientBackAgain(Student s){
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
-    private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
@@ -937,7 +900,6 @@ void clientBackAgain(Student s){
     private javax.swing.JTable jTable1;
     private javax.swing.JTable jTable2;
     private javax.swing.JTable jTable3;
-    private javax.swing.JToggleButton jToggleButton1;
     private javax.swing.JToggleButton jToggleButton2;
     // End of variables declaration//GEN-END:variables
     

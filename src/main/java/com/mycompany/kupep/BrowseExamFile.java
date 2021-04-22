@@ -115,9 +115,17 @@ public class BrowseExamFile extends javax.swing.JFrame {
 
     private void jFileChooser1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jFileChooser1ActionPerformed
         // TODO add your handling code here:
-        System.out.println(evt.getActionCommand());
-        this.examSettingsForm.setExamFile(jFileChooser1.getSelectedFile().getPath());
+    if (evt.getActionCommand().equals(javax.swing.JFileChooser.APPROVE_SELECTION)) {
+        if (jFileChooser1.getSelectedFile()!=null) {
+            this.examSettingsForm.setExamFile(jFileChooser1.getSelectedFile().getPath());    
+        }
         this.dispose();
+    } else if (evt.getActionCommand().equals(javax.swing.JFileChooser.CANCEL_SELECTION)) {
+        this.dispose();
+    }
+
+        
+    
     }//GEN-LAST:event_jFileChooser1ActionPerformed
 
 

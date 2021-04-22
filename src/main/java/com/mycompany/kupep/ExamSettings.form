@@ -96,9 +96,9 @@
                               <Component id="jLabel9" alignment="0" min="-2" pref="185" max="-2" attributes="0"/>
                               <Component id="jLabel4" alignment="0" min="-2" pref="102" max="-2" attributes="0"/>
                               <Component id="jLabel3" alignment="0" min="-2" pref="115" max="-2" attributes="0"/>
-                              <Component id="jLabel2" alignment="0" min="-2" pref="115" max="-2" attributes="0"/>
                               <Component id="jLabel1" alignment="0" min="-2" pref="115" max="-2" attributes="0"/>
                               <Component id="jLabel5" alignment="0" min="-2" pref="115" max="-2" attributes="0"/>
+                              <Component id="jLabel2" alignment="0" min="-2" pref="133" max="-2" attributes="0"/>
                           </Group>
                       </Group>
                       <Group type="102" alignment="0" attributes="0">
@@ -237,8 +237,11 @@
         </Component>
         <Component class="javax.swing.JButton" name="jButton4">
           <Properties>
-            <Property name="text" type="java.lang.String" value="Reset Settings"/>
+            <Property name="text" type="java.lang.String" value="CANCEL"/>
           </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButton4ActionPerformed"/>
+          </Events>
         </Component>
         <Component class="javax.swing.JLabel" name="jLabel9">
           <Properties>
@@ -252,8 +255,11 @@
         </Component>
         <Component class="javax.swing.JLabel" name="jLabel11">
           <Properties>
-            <Property name="text" type="java.lang.String" value="Banned Sites :"/>
+            <Property name="text" type="java.lang.String" value="Permitted Sites :"/>
           </Properties>
+          <AccessibilityProperties>
+            <Property name="AccessibleContext.accessibleName" type="java.lang.String" value="Permitted Sites :"/>
+          </AccessibilityProperties>
         </Component>
         <Component class="javax.swing.JLabel" name="jLabel12">
           <Properties>
@@ -272,10 +278,13 @@
         </Component>
         <Component class="javax.swing.JToggleButton" name="jToggleButton1">
           <Properties>
-            <Property name="text" type="java.lang.String" value="Disabled"/>
+            <Property name="text" type="java.lang.String" value="OFF"/>
             <Property name="toolTipText" type="java.lang.String" value=""/>
             <Property name="actionCommand" type="java.lang.String" value=""/>
           </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jToggleButton1ActionPerformed"/>
+          </Events>
         </Component>
         <Component class="javax.swing.JLabel" name="jLabel5">
           <Properties>

@@ -54,6 +54,11 @@ public class ExamSettings extends javax.swing.JFrame {
         jTextField4.setText(this.examSetting.getExamStartTime());
         jTextField5.setText(Integer.toString(this.examSetting.getExamDuration()));
         jToggleButton1.setSelected(this.examSetting.isInternetEnabled());
+        if (this.examSetting.isInternetEnabled()) {
+            jToggleButton1.setText("ON");
+        } else {
+            jToggleButton1.setText("OFF");
+        }
         
         jTextField7.setText(this.examSetting.getBannedSites());
         jTextField8.setText(this.examSetting.getPermittedFileExtensions());        
@@ -141,13 +146,18 @@ public class ExamSettings extends javax.swing.JFrame {
             }
         });
 
-        jButton4.setText("Reset Settings");
+        jButton4.setText("CANCEL");
+        jButton4.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton4ActionPerformed(evt);
+            }
+        });
 
         jLabel9.setText("Exam Duration :");
 
         jLabel10.setText("Internet Enable/Disable :");
 
-        jLabel11.setText("Banned Sites :");
+        jLabel11.setText("Permitted Sites :");
 
         jLabel12.setText("Permitted File Extensions :");
 
@@ -158,9 +168,14 @@ public class ExamSettings extends javax.swing.JFrame {
             }
         });
 
-        jToggleButton1.setText("Disabled");
+        jToggleButton1.setText("OFF");
         jToggleButton1.setToolTipText("");
         jToggleButton1.setActionCommand("");
+        jToggleButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jToggleButton1ActionPerformed(evt);
+            }
+        });
 
         jLabel5.setText("Course Code");
 
@@ -186,9 +201,9 @@ public class ExamSettings extends javax.swing.JFrame {
                             .addComponent(jLabel9, javax.swing.GroupLayout.PREFERRED_SIZE, 185, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 102, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 115, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 115, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 115, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 115, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 115, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 133, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addGroup(jPanel3Layout.createSequentialGroup()
                         .addGap(113, 113, 113)
                         .addComponent(jButton4)))
@@ -255,6 +270,8 @@ public class ExamSettings extends javax.swing.JFrame {
                 .addGap(159, 159, 159))
         );
 
+        jLabel11.getAccessibleContext().setAccessibleName("Permitted Sites :");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -306,6 +323,21 @@ public class ExamSettings extends javax.swing.JFrame {
         // TODO add your handling code here:
         new BrowseExamFile(this);
     }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void jToggleButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jToggleButton1ActionPerformed
+        // TODO add your handling code here:
+        if (jToggleButton1.getText().equals("OFF")) {
+            jToggleButton1.setText("ON");
+        } else {
+            jToggleButton1.setText("OFF");
+        }
+    }//GEN-LAST:event_jToggleButton1ActionPerformed
+
+    private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
+        // TODO add your handling code here:
+        sController.setExamSettingsForm(null);
+        this.dispose();
+    }//GEN-LAST:event_jButton4ActionPerformed
     
     public void setExamFile(String path){
         jTextField3.setText(path);
