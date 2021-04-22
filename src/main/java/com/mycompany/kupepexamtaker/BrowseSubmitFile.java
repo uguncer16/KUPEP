@@ -114,7 +114,14 @@ public class BrowseSubmitFile extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jFileChooser1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jFileChooser1ActionPerformed
-        // TODO add your handling code here:
+    if (evt.getActionCommand().equals(javax.swing.JFileChooser.APPROVE_SELECTION)) {
+        if (jFileChooser1.getSelectedFile()!=null) {
+            this.examTakerForm.setSubmitFile(jFileChooser1.getSelectedFile().getPath());    
+        }
+        this.dispose();
+    } else if (evt.getActionCommand().equals(javax.swing.JFileChooser.CANCEL_SELECTION)) {
+        this.dispose();
+    }        // TODO add your handling code here:
         System.out.println(evt.getActionCommand());
         this.examTakerForm.setSubmitFile(jFileChooser1.getSelectedFile().getPath());
         this.dispose();

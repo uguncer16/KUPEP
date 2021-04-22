@@ -68,6 +68,9 @@ public class ClientController {
     public String getExamFile(){
         return fm.getFile().getName();
     }
+    public String getPermittedFiles(){
+        return examSetting.getPermittedFileExtensions();
+    }
     
     public void setExamSetting(ExamSetting examSetting) {
         this.examSetting = examSetting;
