@@ -52,6 +52,11 @@ public class ClientArrived implements Serializable {
     public void setOS(String OS) {
         this.OS = OS;
     }
+
+    @Override
+    public String toString() {
+        return "ClientArrived{" + "IP=" + IP + ", username=" + username + ", CompNo=" + CompNo + ", OS=" + OS + '}';
+    }
     
     
 }

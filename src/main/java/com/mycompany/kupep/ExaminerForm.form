@@ -281,7 +281,7 @@
         </Component>
         <Component class="javax.swing.JLabel" name="jLabel15">
           <Properties>
-            <Property name="text" type="java.lang.String" value="Banned Sites :"/>
+            <Property name="text" type="java.lang.String" value="Permitted Sites :"/>
           </Properties>
         </Component>
         <Component class="javax.swing.JLabel" name="jLabel16">

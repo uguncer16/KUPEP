@@ -16,5 +16,12 @@ public class ChatMessageFromStudent extends ChatMessage {
         this.username = username;
     }
 
+    @Override
+    public String toString() {
+        return  " ChatMessageFromStudent{" + "username=" + username + "} " + super.toString() ;
+    }
+
+
+
     
 }

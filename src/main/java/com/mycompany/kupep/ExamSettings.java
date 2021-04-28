@@ -32,6 +32,8 @@ import javax.swing.DefaultCellEditor;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import static javax.swing.JOptionPane.YES_NO_OPTION;
 import javax.swing.JTable;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.DefaultTableCellRenderer;
@@ -153,7 +155,7 @@ public class ExamSettings extends javax.swing.JFrame {
             }
         });
 
-        jLabel9.setText("Exam Duration :");
+        jLabel9.setText("Exam Duration (minutes) :");
 
         jLabel10.setText("Internet Enable/Disable :");
 
@@ -270,8 +272,6 @@ public class ExamSettings extends javax.swing.JFrame {
                 .addGap(159, 159, 159))
         );
 
-        jLabel11.getAccessibleContext().setAccessibleName("Permitted Sites :");
-
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -301,18 +301,22 @@ public class ExamSettings extends javax.swing.JFrame {
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
         // TODO add your handling code here:
-        this.examSetting.setExaminersName(jTextField1.getText());
-        this.examSetting.setExaminersSurname(jTextField2.getText());
-        this.examSetting.setExamFile(jTextField3.getText());
-        this.examSetting.setInternetEnabled(jToggleButton1.isSelected());
-        this.examSetting.setExamStartTime(jTextField4.getText());
-        this.examSetting.setExamDuration(Integer.parseInt(jTextField5.getText()));
-        this.examSetting.setBannedSites(jTextField7.getText());
-        this.examSetting.setPermittedFileExtensions(jTextField8.getText());
-        this.examSetting.setCourseCode(jTextField6.getText());
-        this.sController.updateExamSettings();
-        sController.setExamSettingsForm(null);
-        this.dispose();
+        int input = JOptionPane.showConfirmDialog(null, "Save Exam Settings?","Are you sure?",YES_NO_OPTION);
+        if (input==0) {
+            this.examSetting.setExaminersName(jTextField1.getText());
+            this.examSetting.setExaminersSurname(jTextField2.getText());
+            this.examSetting.setExamFile(jTextField3.getText());
+            this.examSetting.setInternetEnabled(jToggleButton1.isSelected());
+            this.examSetting.setExamStartTime(jTextField4.getText());
+            this.examSetting.setExamDuration(Integer.parseInt(jTextField5.getText()));
+            this.examSetting.setBannedSites(jTextField7.getText());
+            this.examSetting.setPermittedFileExtensions(jTextField8.getText());
+            this.examSetting.setCourseCode(jTextField6.getText());
+            this.sController.updateExamSettings();
+            sController.setExamSettingsForm(null);
+            this.dispose();    
+        }
+        
     }//GEN-LAST:event_jButton3ActionPerformed
 
     private void jTextField6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField6ActionPerformed

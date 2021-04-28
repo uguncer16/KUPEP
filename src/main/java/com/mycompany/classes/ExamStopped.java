@@ -15,6 +15,11 @@ public class ExamStopped implements Serializable {
 
     }
 
+    @Override
+    public String toString() {
+        return "ExamStopped{" + '}';
+    }
+
     
     
 }

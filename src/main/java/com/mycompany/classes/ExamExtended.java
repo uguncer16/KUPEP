@@ -23,6 +23,12 @@ public class ExamExtended implements Serializable {
     public void setDuration(int duration) {
         this.duration = duration;
     }
+
+    @Override
+    public String toString() {
+        return "ExamExtended{" + "duration=" + duration + '}';
+    }
+    
     
     
     

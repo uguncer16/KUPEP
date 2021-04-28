@@ -245,7 +245,7 @@
         </Component>
         <Component class="javax.swing.JLabel" name="jLabel9">
           <Properties>
-            <Property name="text" type="java.lang.String" value="Exam Duration :"/>
+            <Property name="text" type="java.lang.String" value="Exam Duration (minutes) :"/>
           </Properties>
         </Component>
         <Component class="javax.swing.JLabel" name="jLabel10">
@@ -257,9 +257,6 @@
           <Properties>
             <Property name="text" type="java.lang.String" value="Permitted Sites :"/>
           </Properties>
-          <AccessibilityProperties>
-            <Property name="AccessibleContext.accessibleName" type="java.lang.String" value="Permitted Sites :"/>
-          </AccessibilityProperties>
         </Component>
         <Component class="javax.swing.JLabel" name="jLabel12">
           <Properties>

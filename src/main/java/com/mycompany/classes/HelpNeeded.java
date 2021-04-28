@@ -31,5 +31,10 @@ public class HelpNeeded implements Serializable {
     public void setHelpNeeded(boolean helpNeeded) {
         this.helpNeeded = helpNeeded;
     }
+
+    @Override
+    public String toString() {
+        return "HelpNeeded{" + "username=" + username + ", helpNeeded=" + helpNeeded + '}';
+    }
     
 }

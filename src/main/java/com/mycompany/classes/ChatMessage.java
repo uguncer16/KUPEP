@@ -45,5 +45,10 @@ public class ChatMessage implements Serializable {
     public void setIsRead(boolean isRead) {
         this.isRead = isRead;
     }
+
+    @Override
+    public String toString() {
+        return "ChatMessage{" + "message=" + message + ", time=" + time + ", Id=" + Id + ", isRead=" + isRead + '}';
+    }
     
 }

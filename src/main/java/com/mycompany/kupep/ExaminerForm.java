@@ -43,6 +43,8 @@ import java.time.LocalDateTime;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.time.LocalTime;
+import javax.swing.JOptionPane;
+import static javax.swing.JOptionPane.YES_NO_OPTION;
 
 
 
@@ -452,7 +454,7 @@ void clientBackAgain(Student s){
 
         jLabel14.setText("Exam File :");
 
-        jLabel15.setText("Banned Sites :");
+        jLabel15.setText("Permitted Sites :");
 
         jLabel16.setText("-");
 
@@ -783,12 +785,18 @@ void clientBackAgain(Student s){
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
-        sController.startExam();
+        int input = JOptionPane.showConfirmDialog(null, "Start exam?","Are you sure?",YES_NO_OPTION);
+        if (input==0) {
+            sController.startExam();
+        }
     }//GEN-LAST:event_jButton6ActionPerformed
 
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
         // TODO add your handling code here:
-        sController.sendExamFile();
+        int input = JOptionPane.showConfirmDialog(null, "Send exam file?","Are you sure?",YES_NO_OPTION);
+        if (input==0) {
+            sController.sendExamFile();
+        }
     }//GEN-LAST:event_jButton4ActionPerformed
 
     private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed

@@ -44,6 +44,11 @@ public class ChatMessagePublic implements Serializable  {
         this.Id = Id;
     }
 
+    @Override
+    public String toString() {
+        return "ChatMessagePublic{" + "message=" + message + ", time=" + time + ", Id=" + Id + '}';
+    }
+
    
     
 }

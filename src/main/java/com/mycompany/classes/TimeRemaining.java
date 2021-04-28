@@ -19,6 +19,11 @@ public class TimeRemaining implements Serializable{
         return timeRemaing;
     }
 
+    @Override
+    public String toString() {
+        return "TimeRemaining{" + "timeRemaing=" + timeRemaing + '}';
+    }
+
 
     
 }

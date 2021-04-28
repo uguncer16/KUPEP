@@ -23,6 +23,11 @@ public class ExamStarted implements Serializable {
     public void setDuration(int duration) {
         this.duration = duration;
     }
+
+    @Override
+    public String toString() {
+        return "ExamStarted{" + "duration=" + duration + '}';
+    }
     
     
     

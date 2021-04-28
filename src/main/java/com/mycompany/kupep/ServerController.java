@@ -11,6 +11,7 @@ import static io.netty.channel.ChannelFutureListener.FIRE_EXCEPTION_ON_FAILURE;
 import io.netty.channel.ChannelHandlerContext;
 import java.io.File;
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Timer;
@@ -40,6 +41,7 @@ public class ServerController {
     private AddExtraTime addExtraTimeForm;
     private HashMap<String,LocalDateTime> lastSeen;
     ChannelHandlerContext proxyCtx;
+    private DBOperations db;
 
     public void setProxyCtx(ChannelHandlerContext ctx) {
         this.proxyCtx = ctx;
@@ -70,12 +72,16 @@ public class ServerController {
     public void setPmEnabled(boolean b, String s) {
         Student student = studentList.get(s);
         student.setPMEnabled(b);
-        ChannelFuture future = student.getCtx().writeAndFlush(new PMEnabled(b));
+        PMEnabled pm = new PMEnabled(b);
+        db.insertLog(null, pm);
+        ChannelFuture future = student.getCtx().writeAndFlush(pm);
         future.addListener(FIRE_EXCEPTION_ON_FAILURE);
     }
     public void notifyHelpComing(String username) {
         Student student = studentList.get(username);
-        ChannelFuture future = student.getCtx().writeAndFlush(new HelpComing());
+        HelpComing hc = new HelpComing();
+        db.insertLog(null, hc);
+        ChannelFuture future = student.getCtx().writeAndFlush(hc);
         future.addListener(FIRE_EXCEPTION_ON_FAILURE);
         
     }
@@ -122,7 +128,7 @@ public class ServerController {
         
     }
     
-    public ServerController(){
+    public ServerController() throws SQLException, ClassNotFoundException{
         examinerFormGUI = new ExaminerForm(this);
         studentList = new HashMap<String,Student>();
         messageList = new HashMap<String,ArrayList<ChatMessage>>();
@@ -137,6 +143,7 @@ public class ServerController {
         this.timer2 = new Timer();
         this.examStarted = false;
         this.examSetting = new ExamSetting();
+        db = new DBOperations();
     }
     
     public void updateLastSeen(String s) {
@@ -180,6 +187,7 @@ public class ServerController {
     timer.scheduleAtFixedRate(task, 0, 1000); //1000ms = 1sec
     this.examStarted = true;
     ExamStarted examStarted = new ExamStarted(examSetting.getExamDuration());
+    db.insertLog(null, this.examStarted);
     //FileMessage fm = new FileMessage(new File("Coursework.zip"));
     sendMessageToAllStudents(examStarted);
     examinerFormGUI.enableButtonsAfterStartExam();
@@ -202,7 +210,8 @@ public class ServerController {
         BannedSites bannedSites = new BannedSites(b);
 
         ChannelFuture future = proxyCtx.writeAndFlush(bannedSites);    
-        future = proxyCtx.writeAndFlush(this.examSetting);    
+        future = proxyCtx.writeAndFlush(this.examSetting);  
+        db.insertLog(null, this.examSetting);
         future.addListener(FIRE_EXCEPTION_ON_FAILURE);                            
 
         
@@ -277,6 +286,7 @@ public class ServerController {
     public void sendChatMessage(ChatMessageToStudent chatMessage,Student student) {
         
         ChannelFuture future = student.getCtx().writeAndFlush(chatMessage);
+        db.insertLog(null, chatMessage);
         future.addListener(FIRE_EXCEPTION_ON_FAILURE);
         messageList.get(student.getUsername()).add(chatMessage);
         
@@ -285,6 +295,7 @@ public class ServerController {
     public void sendPublicMessage(ChatMessagePublic publicMessage) {
         
         sendMessageToAllStudents(publicMessage);
+        db.insertLog(null, publicMessage);
         publicmessageList.add(publicMessage);
         
     }
@@ -293,8 +304,16 @@ public class ServerController {
         ChannelFuture future;
         future = s.getCtx().writeAndFlush(new  OpenDialog(false));
         future = s.getCtx().writeAndFlush(examSetting);
-        if (this.examSetting.getExamFile()!=null)
-            future = s.getCtx().writeAndFlush(new FileMessage(new File(this.examSetting.getExamFile())));
+        if (this.studentFiles.containsKey(username)) {
+            if (this.studentFiles.get(username)!=null) {
+                future = s.getCtx().writeAndFlush(new FileReceived(this.studentFiles.get(username).getFile().getAbsolutePath()));        
+            }    
+        }
+        if (this.examSetting.getExamFile()!=null) {
+            if (!this.examSetting.getExamFile().equals(""))
+                future = s.getCtx().writeAndFlush(new FileMessage(new File(this.examSetting.getExamFile())));
+        }
+            
         future = s.getCtx().writeAndFlush(new PMEnabled(s.isPMEnabled()));
         if (this.examStarted==true && this.examStopped==false)
             future = s.getCtx().writeAndFlush(new ExamStarted(this.examSetting.getExamDuration()));
@@ -316,7 +335,11 @@ public class ServerController {
     
     public void recieveMessage(ChannelHandlerContext ctx,Object msg) {
         if (msg instanceof ClientArrived) {
+            
             ClientArrived message = (ClientArrived)msg;
+            db.insertLog(message.getUsername(), message);
+
+
             Student s;
             if (!studentList.containsKey(message.getUsername())) {
                 s = new Student(ctx,message.getUsername() ,message.getIP(), "YES");
@@ -340,6 +363,7 @@ public class ServerController {
         }
         if (msg instanceof ChatMessageFromStudent) {
             ChatMessageFromStudent chatMessagFromStudent = (ChatMessageFromStudent)msg;
+            db.insertLog(chatMessagFromStudent.getUsername(), chatMessagFromStudent);
             if (miniChat!=null) {
                 miniChat.receiveChatMessageFromStudent(chatMessagFromStudent);
             } else {
@@ -350,12 +374,13 @@ public class ServerController {
         if (msg instanceof FileMessage) {
             FileMessage fm = (FileMessage)msg;
             try {
-                
+                db.insertLog(fm.getUsername(), fm);
                 FileUtils.writeByteArrayToFile(new File(".\\submittedFiles/"+fm.getUsername()+"/"+fm.getFile().getName()), fm.getBytes());
                 this.studentFiles.put(fm.getUsername(),fm );
                 studentList.get(fm.getUsername()).setSubmitted(true);
+                ChannelFuture future = studentList.get(fm.getUsername()).getCtx().writeAndFlush(new FileReceived(fm.getFile().getAbsolutePath()));        
                 
-                
+                future.addListener(FIRE_EXCEPTION_ON_FAILURE);
             } catch (IOException ex) {
                 Logger.getLogger(ServerController.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -364,6 +389,7 @@ public class ServerController {
         }
         if (msg instanceof HelpNeeded) {
             HelpNeeded h = (HelpNeeded)msg;
+            db.insertLog(h.getUsername(), h);
             helpList.put(h.getUsername(), h.isHelpNeeded());
             if (h.isHelpNeeded()) {
                 if (studentList.containsKey(h.getUsername()))
@@ -391,10 +417,6 @@ public class ServerController {
         s.start();
         c.start();
 
-                    
-                    
-        
-        
     }
     public static void main(String args[]) throws Exception {
         ServerController sController = new ServerController();

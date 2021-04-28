@@ -21,5 +21,10 @@ public class PMEnabled implements Serializable {
     public void setEnabled(boolean enabled) {
         this.enabled = enabled;
     }
+
+    @Override
+    public String toString() {
+        return "PMEnabled{" + "enabled=" + enabled + '}';
+    }
     
 }

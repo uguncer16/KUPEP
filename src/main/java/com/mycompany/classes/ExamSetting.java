@@ -116,6 +116,11 @@ public class ExamSetting implements Serializable{
         this.permittedFileExtensions = permittedFileExtensions;
     }
 
+    @Override
+    public String toString() {
+        return "ExamSetting{" + "courseCode=" + courseCode + ", examinersName=" + examinersName + ", examinersSurname=" + examinersSurname + ", examStartTime=" + examStartTime + ", examFile=" + examFile + ", examDuration=" + examDuration + ", internetEnabled=" + internetEnabled + ", helpEnabled=" + helpEnabled + ", usbEnabled=" + usbEnabled + ", bannedSites=" + bannedSites + ", permittedFileExtensions=" + permittedFileExtensions + '}';
+    }
+
     
     
 }
