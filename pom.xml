@@ -5,6 +5,36 @@
     <artifactId>KUPEPExamTaker</artifactId>
     <version>1.0-SNAPSHOT</version>
     <packaging>jar</packaging>
+     <build>
+    <plugins>
+          <plugin>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <executions>
+            <execution>
+                <phase>install</phase>
+                <goals>
+                    <goal>copy-dependencies</goal>
+                </goals>
+                <configuration>
+                    <outputDirectory>${project.build.directory}/lib</outputDirectory>
+                </configuration>
+            </execution>
+        </executions>
+    </plugin>
+    <plugin>
+        <artifactId>maven-jar-plugin</artifactId>
+        <configuration>
+            <archive>
+                <manifest>
+                    <addClasspath>true</addClasspath>
+                    <classpathPrefix>lib/</classpathPrefix>
+                    <mainClass>com.mycompany.kupepexamtaker.ClientController</mainClass>
+                </manifest>
+            </archive>
+        </configuration>
+    </plugin>
+    </plugins>
+  </build>
         <dependencies>
         <dependency>
             <groupId>io.netty</groupId>
@@ -20,7 +50,7 @@
     </dependencies>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <maven.compiler.source>13</maven.compiler.source>
-        <maven.compiler.target>13</maven.compiler.target>
+        <maven.compiler.source>11</maven.compiler.source>
+        <maven.compiler.target>11</maven.compiler.target>
     </properties>
 </project>

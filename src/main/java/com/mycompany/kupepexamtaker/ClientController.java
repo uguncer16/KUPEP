@@ -130,6 +130,11 @@ public class ClientController {
         future.addListener(FIRE_EXCEPTION_ON_FAILURE);
         
     }
+    
+    public void receiveFileRecieved(String filename) {
+        examTakerGUI.receiveFileReceived(filename);
+    }
+    
     public void receiveChatMessageToStudent(ChatMessageToStudent chatMessageToStudent){
         examTakerGUI.receiveChatMessageToStudent(chatMessageToStudent);
         

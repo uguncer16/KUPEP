@@ -35,7 +35,7 @@ import io.netty.handler.ssl.util.InsecureTrustManagerFactory;
 public final class ObjectEchoClient {
 
     static final boolean SSL = System.getProperty("ssl") != null;
-    static final String HOST = System.getProperty("host", "127.0.0.1");
+    static final String HOST = System.getProperty("host", "192.168.56.1");
     static final int PORT = Integer.parseInt(System.getProperty("port", "8007"));
     static final int SIZE = Integer.parseInt(System.getProperty("size", "256"));
 

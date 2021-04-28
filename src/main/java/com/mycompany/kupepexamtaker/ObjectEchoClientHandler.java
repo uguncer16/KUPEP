@@ -109,6 +109,11 @@ public class ObjectEchoClientHandler extends ChannelInboundHandlerAdapter {
             OpenDialog openDialog = (OpenDialog)msg;
             cController.setOpenDiaolog(openDialog.isOn());
 
+        }        
+        else if (msg instanceof FileReceived) {
+            FileReceived fr = (FileReceived)msg;
+            cController.receiveFileRecieved(fr.getFilename());
+
         }
 
 
