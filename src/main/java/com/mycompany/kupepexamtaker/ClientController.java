@@ -37,7 +37,7 @@ public class ClientController {
     public void helpNeeded(boolean b) {
         HelpNeeded h = new HelpNeeded(System.getProperty("user.name"),b);
         ChannelFuture future = ctx.writeAndFlush(h);
-        future.addListener(FIRE_EXCEPTION_ON_FAILURE);
+        //future.addListener(FIRE_EXCEPTION_ON_FAILURE);
         
     }
     
@@ -52,7 +52,7 @@ public class ClientController {
     public void sendSubmitFile() {
        FileMessage fm = new FileMessage(new File(this.submitFile),System.getProperty("user.name"));
                 ChannelFuture future = ctx.writeAndFlush(fm);
-        future.addListener(FIRE_EXCEPTION_ON_FAILURE);
+        //future.addListener(FIRE_EXCEPTION_ON_FAILURE);
     }
     
     public void setExamFile(FileMessage fm) {
@@ -127,7 +127,7 @@ public class ClientController {
     public void sendChatMessage(ChatMessageFromStudent chatMessage) {
         
         ChannelFuture future = ctx.writeAndFlush(chatMessage);
-        future.addListener(FIRE_EXCEPTION_ON_FAILURE);
+        //future.addListener(FIRE_EXCEPTION_ON_FAILURE);
         
     }
     

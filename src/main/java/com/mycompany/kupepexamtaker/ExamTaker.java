@@ -133,13 +133,19 @@ public void informExamStopped() {
 
 public void receiveChatMessageToStudent(ChatMessageToStudent chatMessageToStudent) {
     String textSoFar = jTextArea2.getText();
-    textSoFar += ">" + chatMessageToStudent.getTime() + ":" + chatMessageToStudent.getMessage() +"\n";
+    if (cController.examSetting.getExaminersName() !=null && cController.examSetting.getExaminersSurname()!=null)
+        textSoFar += cController.examSetting.getExaminersName() + " " + cController.examSetting.getExaminersSurname() + ">" + chatMessageToStudent.getTime() + ":" + chatMessageToStudent.getMessage() +"\n";
+    else
+        textSoFar += ">" + chatMessageToStudent.getTime() + ":" + chatMessageToStudent.getMessage() +"\n";    
     jTextArea2.setText(textSoFar );
     
 }
 public void receiveChatMessagePublic(ChatMessagePublic chatMessagePublic) {
     String textSoFar = jTextArea3.getText();
-    textSoFar += ">" + chatMessagePublic.getTime() + ":" + chatMessagePublic.getMessage() +"\n";
+    if (cController.examSetting.getExaminersName() !=null && cController.examSetting.getExaminersSurname()!=null)
+        textSoFar +=  cController.examSetting.getExaminersName() + " " + cController.examSetting.getExaminersSurname() + ">"  + chatMessagePublic.getTime() + ":" + chatMessagePublic.getMessage() +"\n";
+    else 
+        textSoFar +=  ">" + chatMessagePublic.getTime() + ":" + chatMessagePublic.getMessage() +"\n";
     jTextArea3.setText(textSoFar );
     
 }
@@ -630,7 +636,7 @@ public void receiveFileReceived(String filename) {
             jButton4.setEnabled(true);
             cController.setSubmitFile(path);            
         } else {
-            jLabel32.setText("Inavlid file extension");
+            jLabel32.setText("Invalid file extension");
             jButton4.setEnabled(false);
         }
         
@@ -687,7 +693,7 @@ public void receiveFileReceived(String filename) {
         cController.sendChatMessage(chatMessage);
         jTextArea1.setText("");
         String textSoFar = jTextArea2.getText();
-        textSoFar += ">>" + chatMessage.getTime() + ":" + chatMessage.getMessage()+"\n";
+        textSoFar += System.getProperty("user.name") + ">>" + chatMessage.getTime() + ":" + chatMessage.getMessage()+"\n";
         jTextArea2.setText(textSoFar );
     }//GEN-LAST:event_jButton1ActionPerformed
 
