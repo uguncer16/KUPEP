@@ -8,6 +8,9 @@ package com.mycompany.proxy;
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -16,11 +19,18 @@ import java.util.regex.Pattern;
  */
 public class Server extends Thread {
     static ProxyController pController;
-
+    static DBOperations db;
 
     public Server(ProxyController pController) {
         super("Server Thread");
         this.pController = pController;
+        try {
+            this.db = new DBOperations();
+        } catch (SQLException ex) {
+            Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     @Override
@@ -65,7 +75,7 @@ public class Server extends Thread {
                     }
                 }
                 
-                
+                db.insertLog("Proxy", "isAllowed =" + isAllowed + ", ip= " + clientSocket.getLocalAddress().toString() + ", " +  request);
                 if (isAllowed) {
                     System.out.println("Not Banned Request");
                     Matcher matcher = CONNECT_PATTERN.matcher(request);
