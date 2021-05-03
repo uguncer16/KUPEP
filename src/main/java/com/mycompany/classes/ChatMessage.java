@@ -19,8 +19,7 @@ public class ChatMessage implements Serializable {
         public ChatMessage(String message) {
         this.message = message;
         this.time = new SimpleDateFormat("HH:mm").format(new java.util.Date());
-        this.isRead = false;
-        this.Id = UUID.randomUUID().toString();
+        
     }
 
     public String getMessage() {
@@ -48,7 +47,7 @@ public class ChatMessage implements Serializable {
 
     @Override
     public String toString() {
-        return "ChatMessage{" + "message=" + message + ", time=" + time + ", Id=" + Id + ", isRead=" + isRead + '}';
+        return "ChatMessage{" + "message=" + message + ", time=" + time  + '}';
     }
     
 }

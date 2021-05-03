@@ -29,7 +29,7 @@ public class ServerController {
     private ArrayList<ChatMessagePublic> publicmessageList;
     private HashMap<String,Boolean> helpList;
     private HashMap<String,FileMessage> studentFiles;
-    private MiniChat miniChat;
+    private HashMap<String,MiniChat> miniChat;
     private PublicMessageBox publicMessageBox;
     private ExamSettings examSettingsForm;
     private ExamSetting examSetting;
@@ -92,8 +92,8 @@ public class ServerController {
         this.examStarted = examStarted;
     }
 
-    public void setMiniChat(MiniChat miniChat) {
-        this.miniChat = miniChat;
+    public void setMiniChat(MiniChat miniChat,String user) {
+        this.miniChat.put(user, miniChat);
     }
     
     public void setExamSettingsForm(ExamSettings examSettingsForm) {
@@ -136,7 +136,7 @@ public class ServerController {
         studentFiles = new HashMap<String,FileMessage> ();
         helpList = new HashMap<String,Boolean>();
         lastSeen = new HashMap<String,LocalDateTime> ();
-        this.miniChat = null;
+        this.miniChat = new HashMap<String,MiniChat> ();;
         this.publicMessageBox = null;
         this.examSettingsForm = null;
         this.timer = new Timer();
@@ -144,6 +144,7 @@ public class ServerController {
         this.examStarted = false;
         this.examSetting = new ExamSetting();
         db = new DBOperations();
+        checkWhoIsOnline();
     }
     
     public void updateLastSeen(String s) {
@@ -155,8 +156,11 @@ public class ServerController {
         public void run(){
             for (String u:lastSeen.keySet()) {
                 LocalDateTime lastSeenAt = lastSeen.get(u);
-                if (Duration.between(lastSeenAt,LocalDateTime.now()).toSeconds()>=15 && !studentFiles.containsKey(u) ){
+                if (Duration.between(lastSeenAt,LocalDateTime.now()).toSeconds()>=15 && !studentFiles.containsKey(u) && examStarted && !examStopped  ){
                     examinerFormGUI.populateDisconnectedList(studentList.get(u), lastSeenAt);
+                }
+                if (Duration.between(lastSeenAt,LocalDateTime.now()).toSeconds()>=15  ){
+                    examinerFormGUI.populateDisconnectedList2(studentList.get(u), lastSeenAt);
                 }
             }
                 
@@ -166,7 +170,7 @@ public class ServerController {
     }
     
     public void startExam(){
-        checkWhoIsOnline();
+
         TimerTask task = new TimerTask(){
         private int i = 0;
         public void run(){
@@ -251,9 +255,14 @@ public class ServerController {
     public void openChat(String username){
             if (studentList.containsKey(username)) {
                 Student s = studentList.get(username);
-                if (this.miniChat==null) {
-                    MiniChat minichat = new MiniChat(this,s);    
-                    this.miniChat =  minichat;
+                if (this.miniChat.containsKey(username)) {
+                    if (this.miniChat.get(username)==null) {
+                        MiniChat minichat = new MiniChat(this,s);        
+                        this.miniChat.put(username, minichat);
+                    }
+                } else {
+                    MiniChat minichat = new MiniChat(this,s);        
+                    this.miniChat.put(username, minichat);
                 }
                 
             }
@@ -364,8 +373,13 @@ public class ServerController {
         if (msg instanceof ChatMessageFromStudent) {
             ChatMessageFromStudent chatMessagFromStudent = (ChatMessageFromStudent)msg;
             db.insertLog(chatMessagFromStudent.getUsername(), chatMessagFromStudent);
-            if (miniChat!=null) {
-                miniChat.receiveChatMessageFromStudent(chatMessagFromStudent);
+            if (miniChat.containsKey(chatMessagFromStudent.getUsername())) {
+                if (miniChat.get(chatMessagFromStudent.getUsername())!=null) {
+                    miniChat.get(chatMessagFromStudent.getUsername()).receiveChatMessageFromStudent(chatMessagFromStudent);    
+                } else {
+                    examinerFormGUI.setNewMessage(chatMessagFromStudent);    
+                }
+                
             } else {
                 examinerFormGUI.setNewMessage(chatMessagFromStudent);
             }

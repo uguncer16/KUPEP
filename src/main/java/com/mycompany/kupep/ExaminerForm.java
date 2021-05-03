@@ -76,13 +76,16 @@ public class ExaminerForm extends javax.swing.JFrame {
  
 class miniChatColumnCellRenderer extends DefaultTableCellRenderer {
 
+  @Override
   public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int col) {
 
     //Cells are by default rendered as a JLabel.
     JLabel l = (JLabel) super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, col);
     if (l.getText().equals("New")  ) {
     l.setBackground(Color.RED);    
-    } 
+    }  else {
+    l.setBackground(Color.WHITE);        
+    }
   //Return the JLabel which renders the cell.
   return l;
   }
@@ -90,6 +93,7 @@ class miniChatColumnCellRenderer extends DefaultTableCellRenderer {
 
 class pmEnabledColumnCellRenderer extends DefaultTableCellRenderer {
 
+  @Override
   public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int col) {
 
     //Cells are by default rendered as a JLabel.
@@ -104,6 +108,7 @@ class pmEnabledColumnCellRenderer extends DefaultTableCellRenderer {
 
 class OKColumnCellRenderer extends DefaultTableCellRenderer {
 
+  @Override
   public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int col) {
 
     //Cells are by default rendered as a JLabel.
@@ -120,6 +125,7 @@ class OKColumnCellRenderer extends DefaultTableCellRenderer {
 
     /**
      * Creates new form ContactEditor
+     * @param sController
      */
     public ExaminerForm(ServerController sController) {
         this.sController = sController;
@@ -269,6 +275,15 @@ void populateDisconnectedList(Student s, LocalDateTime lastSeen){
 
 }
 
+void populateDisconnectedList2(Student s, LocalDateTime lastSeen){
+     for(int row = 0;row < m.getRowCount();row++) {
+        if (m.getValueAt(row, 2).equals(s.getUsername())) {
+            m.setValueAt("NO", row, 3);
+        }  
+     }
+
+}
+
 void clientBackAgain(Student s){
      for(int row = 0;row < m.getRowCount();row++) {
         if (m.getValueAt(row, 2).equals(s.getUsername())) {
@@ -289,7 +304,11 @@ void clientBackAgain(Student s){
         Object[] mHelpListData1 = 
                 {s.getUsername(),  "OK","Open", LocalTime.now() };        
         
-
+     for(int row = 0;row < mHelpList.getRowCount();row++) {
+        if (mHelpList.getValueAt(row, 0).equals(s.getUsername())) {
+            mHelpList.removeRow(row);
+        }  
+     }
         mHelpList.addRow(mHelpListData1);           
     }
     void clientCancelsHelp(Student s){

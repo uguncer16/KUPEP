@@ -55,8 +55,10 @@ public class MiniChat extends javax.swing.JFrame {
         
         String textSoFar = "";
         for (ChatMessage cm: sController.getMessages(student.getUsername())) {
-                
-                textSoFar += ">" + cm.getTime() + ":" + cm.getMessage()+"\n";
+                if (cm instanceof ChatMessageFromStudent )
+                textSoFar += ((ChatMessageFromStudent) cm).getUsername() + ">" + cm.getTime() + ":" + cm.getMessage()+"\n";
+                else
+                textSoFar += ">>" + cm.getTime() + ":" + cm.getMessage()+"\n";    
 
         }
             jTextArea2.setText(textSoFar );
@@ -67,7 +69,7 @@ public class MiniChat extends javax.swing.JFrame {
             @Override
             public void windowClosing(WindowEvent e)
             {
-                sController.setMiniChat(null);
+                sController.setMiniChat(null,student.getUsername());
             }
         });
     
@@ -205,7 +207,7 @@ public class MiniChat extends javax.swing.JFrame {
 
   public void receiveChatMessageFromStudent(ChatMessageFromStudent chatMessageFromStudent) {
     String textSoFar = jTextArea2.getText();
-    textSoFar += ">" + chatMessageFromStudent.getTime() + ":" + chatMessageFromStudent.getMessage()+"\n";
+    textSoFar += chatMessageFromStudent.getUsername() + ">" + chatMessageFromStudent.getTime() + ":" + chatMessageFromStudent.getMessage()+"\n";
     jTextArea2.setText(textSoFar );
     
 }
@@ -217,7 +219,7 @@ public class MiniChat extends javax.swing.JFrame {
         sController.sendChatMessage(chatMessage,student);
         jTextArea1.setText("");
         String textSoFar = jTextArea2.getText();
-        textSoFar += ">>" + chatMessage.getTime() + ":" + chatMessage.getMessage()+"\n";
+        textSoFar += System.getProperty("user.name") + ">>" + chatMessage.getTime() + ":" + chatMessage.getMessage()+"\n";
         jTextArea2.setText(textSoFar );
     }//GEN-LAST:event_jButton1ActionPerformed
     
